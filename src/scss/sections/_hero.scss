@@ -1,0 +1,49 @@
+@use "../base/variables" as *;
+
+
+.hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+
+  background: url("/src/img/HeroDesktop3.png") center / cover no-repeat;
+  background-color: $bg-hero;
+
+  display: grid;
+  place-items: center;
+  text-align: center;
+
+  overflow: hidden;
+}
+
+
+.hero-notizie {
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+
+  background: url("/src/img/chisiamohero.jpg") center / cover no-repeat;
+  background-color: $bg-hero;
+
+  display: grid;
+  place-items: center;
+  text-align: center;
+
+  overflow: hidden;
+}
+
+.hero-glass {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: $radius-md;
+  padding: 24px;
+}
+
+  @media (max-width: 600px) {
+  .hero {
+    background: url("/src/img/heromobile.jpg") center / cover no-repeat;
+  background-color: $bg-hero;
+    background-position: 42.99%;
+  }
+}

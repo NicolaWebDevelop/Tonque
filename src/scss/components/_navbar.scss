@@ -1,0 +1,31 @@
+@use "../base/variables" as *;
+
+/* HEADER */
+.header {
+  // position: sticky; // ⬅️ resta visibile solo finché l’header è in viewport
+  top: 0;
+  z-index: 10;
+
+  height: 80px;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+
+  background-color: $glass-bg;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* CONTENUTO */
+.section {
+  min-height: 100vh;
+  padding: 60px 24px;
+}

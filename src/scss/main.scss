@@ -1,0 +1,17 @@
+@use "base/reset";
+@use "base/variables";
+@use "base/typography";
+@use "base/layout";
+
+@use "components/navbar";
+@use "components/buttons";
+@use "components/cards";
+@use "components/back-to-top";  
+@use "components/modal";
+@use "components/segnalibro";
+
+@use "sections/hero";
+@use "sections/notizie";
+@use "sections/footer";
+
+

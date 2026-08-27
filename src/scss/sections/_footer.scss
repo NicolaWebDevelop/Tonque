@@ -1,0 +1,107 @@
+@use "../base/variables" as *;
+
+/* =========================
+   FOOTER GLASS
+========================= */
+
+.footer-glass {
+  padding: 60px 20px;
+  background: #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* =========================
+   LAYOUT CENTRATO
+========================= */
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* =========================
+   CONTENUTO
+========================= */
+
+.footer-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-claim {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.footer-copy {
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .footer-glass {
+    padding: 50px 20px;
+  }
+
+  .footer-claim {
+    font-size: 0.95rem;
+  }
+
+  .footer-copy {
+    font-size: 0.8rem;
+  }
+}
+
+
+.footer-legal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* spazio tra le due parti */
+  flex-wrap: wrap; /* va a capo su mobile */
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+/* bottone come testo */
+.footer-link {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  text-decoration: underline;
+
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   8️⃣ FOOTER LINK
+========================================================= */
+
+.footer-link {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+}
