@@ -38,6 +38,64 @@ document.addEventListener("DOMContentLoaded", () => {
   let bookmarks =
     JSON.parse(localStorage.getItem("bookmarks")) || [];
 
+    const bookmarkClearButton =
+  document.getElementById("bookmark-clear-all");
+
+const bookmarkClearModal =
+  document.getElementById("bookmark-clear-modal");
+
+const bookmarkClearCancel =
+  document.getElementById("bookmark-clear-cancel");
+
+const bookmarkClearConfirm =
+  document.getElementById("bookmark-clear-confirm");
+
+const bookmarkClearOverlay =
+  document.querySelector(".bookmark-clear-overlay");
+
+  /* =========================
+   CLEAR ALL BOOKMARKS MODAL
+========================= */
+
+function openBookmarkClearModal() {
+  if (!bookmarkClearModal || bookmarks.length === 0) return;
+
+  bookmarkClearModal.hidden = false;
+
+  // Blocca lo scroll della pagina
+  document.body.style.overflow = "hidden";
+
+  // Porta il focus su Annulla
+  bookmarkClearCancel?.focus();
+}
+
+function closeBookmarkClearModal() {
+  if (!bookmarkClearModal) return;
+
+  bookmarkClearModal.hidden = true;
+
+  // Riattiva lo scroll
+  document.body.style.overflow = "";
+
+  bookmarkClearButton?.focus();
+}
+
+function clearAllBookmarks() {
+  bookmarks = [];
+
+  visibleBookmarks = BOOKMARK_PAGE_SIZE;
+
+  localStorage.removeItem("bookmarks");
+
+  // Chiude la modale
+  bookmarkClearModal.hidden = true;
+  document.body.style.overflow = "";
+
+  // Aggiorna tutta la UI
+  renderBookmarks();
+  updateBookmarkIcons();
+}
+
   /* =========================
      NEWS COUNTER
   ========================== */
@@ -481,6 +539,9 @@ currentIndex += PAGE_SIZE;
 }
 
   /* EVENTS */
+/* =========================
+   EVENTS
+========================= */
 
 loadMoreButton.addEventListener(
   "click",
@@ -500,5 +561,47 @@ if (bookmarkLoadMoreButton) {
   );
 }
 
-  init();
+
+/* =========================
+   CLEAR BOOKMARK EVENTS
+========================= */
+
+bookmarkClearButton?.addEventListener(
+  "click",
+  openBookmarkClearModal
+);
+
+bookmarkClearCancel?.addEventListener(
+  "click",
+  closeBookmarkClearModal
+);
+
+bookmarkClearOverlay?.addEventListener(
+  "click",
+  closeBookmarkClearModal
+);
+
+bookmarkClearConfirm?.addEventListener(
+  "click",
+  clearAllBookmarks
+);
+
+document.addEventListener("keydown", event => {
+  if (
+    event.key === "Escape" &&
+    bookmarkClearModal &&
+    !bookmarkClearModal.hidden
+  ) {
+    closeBookmarkClearModal();
+  }
 });
+
+
+/* =========================
+   INIT
+========================= */
+
+init();
+
+});
+

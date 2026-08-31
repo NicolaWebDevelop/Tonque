@@ -71,23 +71,94 @@
 
       <div class="bookmark-more-container" id="bookmark-more-container" hidden>
 
-        <button
-          id="bookmark-load-more"
-          class="btn-glass"
-          hidden
-        >
-          Mostra altri segnalibri
-        </button>
+  <div class="bookmark-actions">
 
-        <p
-          id="bookmark-counter"
-          class="bookmark-counter"
-          hidden
-        >
-          Mostrati 0 di 0 segnalibri
-        </p>
+    <button id="bookmark-load-more" class="btn-glass" hidden>
+      Mostra altri segnalibri
+    </button>
 
-      </div>
+    <button
+      id="bookmark-clear-all"
+      class="bookmark-clear-all"
+      type="button"
+      aria-label="Elimina tutti i segnalibri"
+      title="Elimina tutti i segnalibri"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+  </div>
+
+  <p
+    id="bookmark-counter"
+    class="bookmark-counter"
+    hidden
+  >
+    Mostrati 0 di 0 segnalibri
+  </p>
+
+</div>
+
+<div
+  id="bookmark-clear-modal"
+  class="bookmark-clear-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="bookmark-clear-title"
+  hidden
+>
+
+  <div class="bookmark-clear-overlay"></div>
+
+  <div class="bookmark-clear-dialog">
+
+    <div class="bookmark-clear-icon">
+      🗑️
+    </div>
+
+    <h3 id="bookmark-clear-title">
+      Eliminare tutti i segnalibri?
+    </h3>
+
+    <p>
+      Questa operazione eliminerà tutte le news salvate.
+    </p>
+
+    <div class="bookmark-clear-buttons">
+
+      <button
+        id="bookmark-clear-cancel"
+        class="btn-glass"
+        type="button"
+      >
+        Annulla
+      </button>
+
+      <button
+        id="bookmark-clear-confirm"
+        class="bookmark-confirm-delete"
+        type="button"
+      >
+        Elimina tutti
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 
     </div>
 
