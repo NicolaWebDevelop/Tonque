@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tongue</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="/src/img/tonquefavi.png" type="image/x-icon">
+ <link rel="icon" href="/src/img/tonquefavi.png" type="image/png">
 </head>
 <body>
 
@@ -33,15 +33,32 @@
       <div class="container my-4">
         <div id="news-container">
           <div class="news-list"></div>
-        </div>
-       <div class="load-more-container">
-  <button id="load-more" class="btn-glass" style="cursor: pointer;">
+   <nav
+    id="news-navigation"
+    class="news-navigation"
+    aria-label="Navigazione news"
+    hidden
+  ></nav>
+
+</div>
+
+<div class="load-more-container">
+
+  <button
+    id="load-more"
+    class="btn-glass"
+    style="cursor: pointer;"
+  >
     Carica altre news
   </button>
 
-  <p id="news-counter" class="news-counter">
+  <p
+    id="news-counter"
+    class="news-counter"
+  >
     Mostrate 0 di 0 news
   </p>
+
 </div>
       </div>
     </div>

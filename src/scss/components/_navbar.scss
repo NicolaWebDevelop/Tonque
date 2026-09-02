@@ -1,31 +1,182 @@
-@use "../base/variables" as *;
+.news-navigation {
+  position: fixed;
 
-/* HEADER */
-.header {
-  // position: sticky; // ⬅️ resta visibile solo finché l’header è in viewport
-  top: 0;
-  z-index: 10;
+  left: 50%;
+  bottom: 16px;
 
-  height: 80px;
-  padding: 0 24px;
+  transform: translateX(-50%);
+
+  z-index: 100;
+
+  width: fit-content;
+
+  margin: 0;
+
+  padding: 8px 10px;
 
   display: flex;
   align-items: center;
+  justify-content: center;
 
-  background-color: $glass-bg;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  gap: 6px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-radius: 14px;
+
+  background:
+    rgba(18, 20, 25, 0.92);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.35);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: 700;
+
+/* VISIBILE SOLO NELLA SEZIONE NEWS */
+
+.news-navigation.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+/* NASCOSTO PRIMA DEL CARICAMENTO */
+
+.news-navigation[hidden] {
+  display: none;
+}
+
+
+/* =========================================================
+   NUMERI E FRECCE
+========================================================= */
+
+.news-page-button,
+.news-nav-arrow {
+  min-width: 36px;
+  height: 36px;
+
+  padding: 0 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-radius: 9px;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
   color: #fff;
-  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: 0.9rem;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
-/* CONTENUTO */
-.section {
-  min-height: 100vh;
-  padding: 60px 24px;
+
+/* HOVER */
+
+.news-page-button:hover,
+.news-nav-arrow:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  border-color:
+    rgba(255, 255, 255, 0.35);
+}
+
+
+/* PAGINA ATTIVA */
+
+.news-page-button.active {
+  background:
+    rgba(170, 35, 35, 0.9);
+
+  border-color:
+    rgba(255, 90, 90, 0.65);
+}
+
+
+/* FRECCE DISABILITATE */
+
+.news-nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+
+/* PUNTINI */
+
+.news-nav-ellipsis {
+  padding: 0 4px;
+
+  color:
+    rgba(255, 255, 255, 0.6);
+}
+
+
+/* SCROLL AI BLOCCHI */
+
+.news-page-start {
+  scroll-margin-top: 30px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .news-navigation {
+    bottom: 10px;
+
+    max-width:
+      calc(100vw - 24px);
+
+    padding: 7px;
+
+    gap: 4px;
+  }
+
+  .news-page-button,
+  .news-nav-arrow {
+    min-width: 32px;
+    height: 32px;
+
+    padding: 0 8px;
+
+    font-size: 0.82rem;
+  }
+
+  .news-page-start {
+    scroll-margin-top: 20px;
+  }
 }
