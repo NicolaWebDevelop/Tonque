@@ -4,6 +4,7 @@ export function initNewsNavigation({
   pageSize,
   getCurrentIndex
 }) {
+
   if (!newsNavigation) {
     return {
       update: () => {},
@@ -11,63 +12,111 @@ export function initNewsNavigation({
     };
   }
 
-  let activePage = 1;
 
-const bookmarkSection =
-  document.getElementById("segnalibri");
+  /* =========================================================
+     ELEMENTI DOM
+  ========================================================= */
+
+  const floatingControls =
+    document.getElementById(
+      "news-floating-controls"
+    );
+
+  const bookmarkSection =
+    document.getElementById(
+      "segnalibri"
+    );
+
+  const bookmarkShortcut =
+    document.getElementById(
+      "bookmark-shortcut"
+    );
 
   const homeSection =
-  document.getElementById("home");
+    document.getElementById(
+      "home"
+    );
 
 
-  /* =========================
-     SCROLL PAGINA
-  ========================== */
+  /* =========================================================
+     STATE
+  ========================================================= */
+
+  let activePage = 1;
+
+  let newsVisible = false;
+  let bookmarksVisible = false;
+  let homeVisible = true;
+
+
+  /* =========================================================
+     SCROLL PAGINA NEWS
+  ========================================================= */
 
   function scrollToNewsPage(page) {
+
     const totalPages =
-      Math.ceil(getCurrentIndex() / pageSize);
+      Math.ceil(
+        getCurrentIndex() /
+        pageSize
+      );
 
-    if (totalPages === 0) return;
 
-    const targetPage = Math.min(
-      Math.max(page, 1),
-      totalPages
-    );
+    if (totalPages === 0) {
+      return;
+    }
+
+
+    const targetPage =
+      Math.min(
+        Math.max(page, 1),
+        totalPages
+      );
+
 
     const target =
       document.getElementById(
         `news-page-${targetPage}`
       );
 
-    if (!target) return;
 
-    activePage = targetPage;
+    if (!target) {
+      return;
+    }
+
+
+    activePage =
+      targetPage;
+
 
     target.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
 
+
     update();
   }
 
 
-  /* =========================
+  /* =========================================================
      PAGINE DA MOSTRARE
-  ========================== */
+  ========================================================= */
 
   function getNavigationPages(
     totalPages,
     currentPage
   ) {
-    const pages = new Set([
-      1,
-      totalPages,
-      currentPage - 1,
-      currentPage,
-      currentPage + 1
-    ]);
+
+    const pages =
+      new Set([
+        1,
+        totalPages,
+        currentPage - 1,
+        currentPage,
+        currentPage + 1
+      ]);
+
 
     return [...pages]
       .filter(
@@ -75,62 +124,124 @@ const bookmarkSection =
           page >= 1 &&
           page <= totalPages
       )
-      .sort((a, b) => a - b);
+      .sort(
+        (a, b) => a - b
+      );
   }
 
 
-  /* =========================
-     UPDATE NAVIGATION
-  ========================== */
+  /* =========================================================
+     VISIBILITÀ CONTROLLI
+  ========================================================= */
 
-  function update() {
-    newsNavigation.replaceChildren();
+  function updateNavigationVisibility() {
 
-    const totalPages =
-      Math.ceil(getCurrentIndex() / pageSize);
-
-    if (totalPages === 0) {
-      newsNavigation.hidden = true;
+    if (!floatingControls) {
       return;
     }
 
-    newsNavigation.hidden = false;
+
+    const hasNews =
+      getCurrentIndex() > 0;
 
 
-    /* FRECCIA PRECEDENTE */
+    const shouldShow =
+      hasNews &&
+      newsVisible &&
+      !bookmarksVisible &&
+      !homeVisible;
+
+
+    floatingControls.classList.toggle(
+      "is-visible",
+      shouldShow
+    );
+  }
+
+
+  /* =========================================================
+     UPDATE NAVIGATION
+  ========================================================= */
+
+  function update() {
+
+    newsNavigation.replaceChildren();
+
+
+    const totalPages =
+      Math.ceil(
+        getCurrentIndex() /
+        pageSize
+      );
+
+
+    if (totalPages === 0) {
+
+      newsNavigation.hidden =
+        true;
+
+      updateNavigationVisibility();
+
+      return;
+    }
+
+
+    newsNavigation.hidden =
+      false;
+
+
+    /* =======================================================
+       FRECCIA PRECEDENTE
+    ======================================================== */
 
     const previousButton =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
-    previousButton.type = "button";
+
+    previousButton.type =
+      "button";
+
+
     previousButton.className =
       "news-nav-arrow";
 
-    previousButton.textContent = "‹";
+
+    previousButton.textContent =
+      "‹";
+
 
     previousButton.setAttribute(
       "aria-label",
       "Blocco precedente"
     );
 
+
     previousButton.disabled =
       activePage === 1;
+
 
     previousButton.addEventListener(
       "click",
       () => {
+
         scrollToNewsPage(
           activePage - 1
         );
+
       }
     );
+
 
     newsNavigation.appendChild(
       previousButton
     );
 
 
-    /* NUMERI */
+    /* =======================================================
+       NUMERI PAGINE
+    ======================================================== */
 
     const pages =
       getNavigationPages(
@@ -138,44 +249,74 @@ const bookmarkSection =
         activePage
       );
 
-    let previousPage = null;
+
+    let previousPage =
+      null;
+
 
     pages.forEach(page => {
+
+      /* ELLISSI */
 
       if (
         previousPage !== null &&
         page - previousPage > 1
       ) {
+
         const ellipsis =
-          document.createElement("span");
+          document.createElement(
+            "span"
+          );
+
 
         ellipsis.className =
           "news-nav-ellipsis";
 
-        ellipsis.textContent = "…";
+
+        ellipsis.textContent =
+          "…";
+
 
         newsNavigation.appendChild(
           ellipsis
         );
       }
 
-      const button =
-        document.createElement("button");
 
-      button.type = "button";
+      /* BUTTON */
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type =
+        "button";
+
 
       button.className =
         "news-page-button";
 
-      button.textContent = page;
+
+      button.textContent =
+        page;
+
 
       button.setAttribute(
         "aria-label",
         `Vai al blocco ${page}`
       );
 
-      if (page === activePage) {
-        button.classList.add("active");
+
+      if (
+        page === activePage
+      ) {
+
+        button.classList.add(
+          "active"
+        );
+
 
         button.setAttribute(
           "aria-current",
@@ -183,163 +324,238 @@ const bookmarkSection =
         );
       }
 
+
       button.addEventListener(
         "click",
         () => {
-          scrollToNewsPage(page);
+
+          scrollToNewsPage(
+            page
+          );
+
         }
       );
+
 
       newsNavigation.appendChild(
         button
       );
 
-      previousPage = page;
+
+      previousPage =
+        page;
     });
 
 
-    /* FRECCIA SUCCESSIVA */
+    /* =======================================================
+       FRECCIA SUCCESSIVA
+    ======================================================== */
 
     const nextButton =
-      document.createElement("button");
+      document.createElement(
+        "button"
+      );
 
-    nextButton.type = "button";
+
+    nextButton.type =
+      "button";
+
 
     nextButton.className =
       "news-nav-arrow";
 
-    nextButton.textContent = "›";
+
+    nextButton.textContent =
+      "›";
+
 
     nextButton.setAttribute(
       "aria-label",
       "Blocco successivo"
     );
 
+
     nextButton.disabled =
       activePage === totalPages;
+
 
     nextButton.addEventListener(
       "click",
       () => {
+
         scrollToNewsPage(
           activePage + 1
         );
+
       }
     );
+
 
     newsNavigation.appendChild(
       nextButton
     );
+
+
+    updateNavigationVisibility();
   }
 
 
- /* =========================
-   VISIBILITÀ NAVIGATORE
-========================== */
+  /* =========================================================
+     OSSERVA HOME
+  ========================================================= */
 
-let newsVisible = false;
-let bookmarksVisible = false;
-let homeVisible = true;
+  if (
+    homeSection &&
+    "IntersectionObserver" in window
+  ) {
 
-function updateNavigationVisibility() {
-  newsNavigation.classList.toggle(
-    "is-visible",
-    newsVisible &&
-    !bookmarksVisible &&
-    !homeVisible
-  );
-}
+    const homeObserver =
+      new IntersectionObserver(
+        entries => {
+
+          entries.forEach(
+            entry => {
+
+              homeVisible =
+                entry.isIntersecting;
 
 
-/* OSSERVA HOME */
+              updateNavigationVisibility();
 
-if (
-  homeSection &&
-  "IntersectionObserver" in window
-) {
-  const homeObserver =
-    new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          homeVisible =
-            entry.isIntersecting;
+            }
+          );
 
-          updateNavigationVisibility();
-        });
-      },
-      {
-        threshold: 0.01
-      }
+        },
+        {
+          threshold: 0.01
+        }
+      );
+
+
+    homeObserver.observe(
+      homeSection
     );
-
-  homeObserver.observe(
-    homeSection
-  );
-}
+  }
 
 
-/* OSSERVA SEZIONE NOTIZIE */
+  /* =========================================================
+     OSSERVA NOTIZIE
+  ========================================================= */
 
-if (
-  newsSection &&
-  "IntersectionObserver" in window
-) {
-  const newsObserver =
-    new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          newsVisible =
-            entry.isIntersecting;
+  if (
+    newsSection &&
+    "IntersectionObserver" in window
+  ) {
 
-          updateNavigationVisibility();
-        });
-      },
-      {
-        threshold: 0,
-        rootMargin: "-1px 0px -1px 0px"
-      }
+    const newsObserver =
+      new IntersectionObserver(
+        entries => {
+
+          entries.forEach(
+            entry => {
+
+              newsVisible =
+                entry.isIntersecting;
+
+
+              updateNavigationVisibility();
+
+            }
+          );
+
+        },
+        {
+          threshold: 0,
+
+          rootMargin:
+            "-1px 0px -1px 0px"
+        }
+      );
+
+
+    newsObserver.observe(
+      newsSection
     );
-
-  newsObserver.observe(
-    newsSection
-  );
-}
+  }
 
 
-/* OSSERVA SEZIONE SEGNALIBRI */
+  /* =========================================================
+     OSSERVA SEGNALIBRI
+  ========================================================= */
 
-if (
-  bookmarkSection &&
-  "IntersectionObserver" in window
-) {
-  const bookmarkObserver =
-    new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          bookmarksVisible =
-            entry.isIntersecting;
+  if (
+    bookmarkSection &&
+    "IntersectionObserver" in window
+  ) {
 
-          updateNavigationVisibility();
-        });
-      },
-      {
-        threshold: 0.01
-      }
+    const bookmarkObserver =
+      new IntersectionObserver(
+        entries => {
+
+          entries.forEach(
+            entry => {
+
+              bookmarksVisible =
+                entry.isIntersecting;
+
+
+              updateNavigationVisibility();
+
+            }
+          );
+
+        },
+        {
+          threshold: 0.01
+        }
+      );
+
+
+    bookmarkObserver.observe(
+      bookmarkSection
     );
+  }
 
-  bookmarkObserver.observe(
-    bookmarkSection
+
+  /* =========================================================
+     VAI AI SEGNALIBRI
+  ========================================================= */
+
+  bookmarkShortcut?.addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+
+      bookmarkSection?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
   );
-}
 
-  /* =========================
+
+  /* =========================================================
      SET PAGINA ATTIVA
-  ========================== */
+  ========================================================= */
 
   function setActivePage(page) {
-    activePage = page;
+
+    activePage =
+      page;
+
+
     update();
   }
+
+
+  /* =========================================================
+     INIT
+  ========================================================= */
+
+  updateNavigationVisibility();
 
 
   return {

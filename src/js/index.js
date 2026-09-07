@@ -1,25 +1,58 @@
-import '../scss/main.scss';
-import './backtotop.js';
-import './notizie.js';
+import "../scss/main.scss";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const openBtn = document.getElementById("open-legal");
-  const closeBtn = document.getElementById("close-legal");
-  const modal = document.getElementById("legal-modal");
+import "./backtotop.js";
+import "./notizie.js";
 
-  if (!openBtn || !modal) return;
 
-  openBtn.addEventListener("click", () => {
-    modal.classList.add("active");
-  });
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-  closeBtn.addEventListener("click", () => {
-    modal.classList.remove("active");
-  });
+    const openBtn =
+      document.getElementById("open-legal");
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.remove("active");
+    const closeBtn =
+      document.getElementById("close-legal");
+
+    const modal =
+      document.getElementById("legal-modal");
+
+
+    if (
+      !openBtn ||
+      !closeBtn ||
+      !modal
+    ) {
+      return;
     }
-  });
-});
+
+
+    openBtn.addEventListener(
+      "click",
+      () => {
+        modal.classList.add("active");
+      }
+    );
+
+
+    closeBtn.addEventListener(
+      "click",
+      () => {
+        modal.classList.remove("active");
+      }
+    );
+
+
+    modal.addEventListener(
+      "click",
+      event => {
+
+        if (event.target === modal) {
+          modal.classList.remove("active");
+        }
+
+      }
+    );
+
+  }
+);

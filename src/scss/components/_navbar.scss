@@ -1,4 +1,8 @@
-.news-navigation {
+/* =========================================================
+   CONTENITORE NAVIGAZIONE + SEGNALIBRI
+========================================================= */
+
+.news-floating-controls {
   position: fixed;
 
   left: 50%;
@@ -8,6 +12,39 @@
 
   z-index: 100;
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  width: fit-content;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+
+
+/* VISIBILE SOLO NELLA SEZIONE NEWS */
+
+.news-floating-controls.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+
+/* =========================================================
+   NAVIGAZIONE NEWS
+========================================================= */
+
+.news-navigation {
   width: fit-content;
 
   margin: 0;
@@ -35,23 +72,6 @@
   box-shadow:
     0 10px 30px
     rgba(0, 0, 0, 0.35);
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transition:
-    opacity 0.25s ease,
-    visibility 0.25s ease;
-}
-
-
-/* VISIBILE SOLO NELLA SEZIONE NEWS */
-
-.news-navigation.is-visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
 }
 
 
@@ -59,6 +79,66 @@
 
 .news-navigation[hidden] {
   display: none;
+}
+
+
+/* =========================================================
+   SHORTCUT SEGNALIBRI
+========================================================= */
+
+.bookmark-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  width: fit-content;
+
+  padding: 8px 14px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-radius: 12px;
+
+  background:
+    rgba(18, 20, 25, 0.88);
+
+  color: #fff;
+
+  text-decoration: none;
+
+  font-size: 0.82rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 8px 24px
+    rgba(0, 0, 0, 0.28);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+/* HOVER SHORTCUT */
+
+.bookmark-shortcut:hover {
+  transform: translateY(-2px);
+
+  background:
+    rgba(255, 255, 255, 0.12);
+
+  border-color:
+    rgba(255, 255, 255, 0.35);
 }
 
 
@@ -99,7 +179,9 @@
 }
 
 
-/* HOVER */
+/* =========================================================
+   HOVER
+========================================================= */
 
 .news-page-button:hover,
 .news-nav-arrow:hover:not(:disabled) {
@@ -113,7 +195,9 @@
 }
 
 
-/* PAGINA ATTIVA */
+/* =========================================================
+   PAGINA ATTIVA
+========================================================= */
 
 .news-page-button.active {
   background:
@@ -124,15 +208,20 @@
 }
 
 
-/* FRECCE DISABILITATE */
+/* =========================================================
+   FRECCE DISABILITATE
+========================================================= */
 
 .news-nav-arrow:disabled {
   opacity: 0.3;
+
   cursor: default;
 }
 
 
-/* PUNTINI */
+/* =========================================================
+   PUNTINI
+========================================================= */
 
 .news-nav-ellipsis {
   padding: 0 4px;
@@ -142,7 +231,9 @@
 }
 
 
-/* SCROLL AI BLOCCHI */
+/* =========================================================
+   SCROLL AI BLOCCHI
+========================================================= */
 
 .news-page-start {
   scroll-margin-top: 30px;
@@ -155,9 +246,17 @@
 
 @media (max-width: 600px) {
 
-  .news-navigation {
+  .news-floating-controls {
     bottom: 10px;
 
+    max-width:
+      calc(100vw - 24px);
+
+    gap: 8px;
+  }
+
+
+  .news-navigation {
     max-width:
       calc(100vw - 24px);
 
@@ -165,6 +264,7 @@
 
     gap: 4px;
   }
+
 
   .news-page-button,
   .news-nav-arrow {
@@ -175,6 +275,14 @@
 
     font-size: 0.82rem;
   }
+
+
+  .bookmark-shortcut {
+    padding: 7px 12px;
+
+    font-size: 0.78rem;
+  }
+
 
   .news-page-start {
     scroll-margin-top: 20px;
