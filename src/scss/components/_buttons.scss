@@ -1,40 +1,64 @@
 @use "../base/variables" as *;
 
+
 /* =========================
    BUTTON BASE
 ========================= */
+
 .btn-custom {
   background-color: rgba(190, 190, 190, 0.17);
+
   padding: 12px 24px;
+
   border-radius: $radius-md;
+
   color: $text-main;
+
   transition: $transition-base;
+
+  cursor: pointer;
+
 
   &:hover {
     background-color: rgba(187, 187, 187, 0.212);
   }
+
+
+  &:disabled {
+    cursor: default;
+  }
 }
+
+
 /* ===============================
    GLASS BUTTON
 ================================ */
 
 .btn-glass {
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
 
   padding: 8px 18px;
+
   font-size: 0.85rem;
+
   font-weight: 500;
 
   color: $text-main;
+
   text-decoration: none;
 
   background: rgba(255, 255, 255, 0.15);
+
   backdrop-filter: blur(10px);
+
   -webkit-backdrop-filter: blur(10px);
 
   border: 1px solid rgba(255, 255, 255, 0.35);
+
   border-radius: 999px;
 
   box-shadow:
@@ -42,14 +66,25 @@
 
   transition: all 0.3s ease;
 
+  cursor: pointer;
+
+
   &:hover {
     background: rgba(255, 255, 255, 0.25);
+
     transform: translateY(-2px);
+
     box-shadow:
       0 8px 26px rgba(0, 0, 0, 0.35);
   }
 
+
   &:active {
     transform: scale(0.96);
+  }
+
+
+  &:disabled {
+    cursor: default;
   }
 }
