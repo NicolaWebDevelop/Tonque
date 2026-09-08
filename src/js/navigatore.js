@@ -48,18 +48,30 @@ export function initNewsNavigation({
   let bookmarksVisible = false;
   let homeVisible = true;
 
+  let ticking = false;
+
 
   /* =========================================================
-     SCROLL PAGINA NEWS
+     TOTALE BLOCCHI CARICATI
+  ========================================================= */
+
+  function getTotalPages() {
+
+    return Math.ceil(
+      getCurrentIndex() / pageSize
+    );
+
+  }
+
+
+  /* =========================================================
+     SCROLL A UN BLOCCO
   ========================================================= */
 
   function scrollToNewsPage(page) {
 
     const totalPages =
-      Math.ceil(
-        getCurrentIndex() /
-        pageSize
-      );
+      getTotalPages();
 
 
     if (totalPages === 0) {
@@ -89,49 +101,67 @@ export function initNewsNavigation({
       targetPage;
 
 
+    updateActiveState();
+
+
     target.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
-
-
-    update();
   }
 
 
   /* =========================================================
-     PAGINE DA MOSTRARE
+     AGGIORNA NUMERO ATTIVO
   ========================================================= */
 
-  function getNavigationPages(
-    totalPages,
-    currentPage
-  ) {
+  function updateActiveState() {
 
-    const pages =
-      new Set([
-        1,
-        totalPages,
-        currentPage - 1,
-        currentPage,
-        currentPage + 1
-      ]);
-
-
-    return [...pages]
-      .filter(
-        page =>
-          page >= 1 &&
-          page <= totalPages
-      )
-      .sort(
-        (a, b) => a - b
+    const buttons =
+      newsNavigation.querySelectorAll(
+        ".news-nav-item"
       );
+
+
+    buttons.forEach(button => {
+
+      const page =
+        Number(
+          button.dataset.page
+        );
+
+
+      const isActive =
+        page === activePage;
+
+
+      button.classList.toggle(
+        "active",
+        isActive
+      );
+
+
+      if (isActive) {
+
+        button.setAttribute(
+          "aria-current",
+          "page"
+        );
+
+      } else {
+
+        button.removeAttribute(
+          "aria-current"
+        );
+
+      }
+
+    });
   }
 
 
   /* =========================================================
-     VISIBILITÀ CONTROLLI
+     VISIBILITÀ MENU
   ========================================================= */
 
   function updateNavigationVisibility() {
@@ -160,7 +190,7 @@ export function initNewsNavigation({
 
 
   /* =========================================================
-     UPDATE NAVIGATION
+     CREA MENU VERTICALE
   ========================================================= */
 
   function update() {
@@ -169,10 +199,7 @@ export function initNewsNavigation({
 
 
     const totalPages =
-      Math.ceil(
-        getCurrentIndex() /
-        pageSize
-      );
+      getTotalPages();
 
 
     if (totalPages === 0) {
@@ -190,100 +217,28 @@ export function initNewsNavigation({
       false;
 
 
-    /* =======================================================
-       FRECCIA PRECEDENTE
-    ======================================================== */
+    /*
+      Mostriamo sempre almeno:
+      1
+      2
+      3
 
-    const previousButton =
-      document.createElement(
-        "button"
+      Dal quarto blocco in poi
+      il menu cresce automaticamente.
+    */
+
+    const visiblePages =
+      Math.max(
+        3,
+        totalPages
       );
 
 
-    previousButton.type =
-      "button";
-
-
-    previousButton.className =
-      "news-nav-arrow";
-
-
-    previousButton.textContent =
-      "‹";
-
-
-    previousButton.setAttribute(
-      "aria-label",
-      "Blocco precedente"
-    );
-
-
-    previousButton.disabled =
-      activePage === 1;
-
-
-    previousButton.addEventListener(
-      "click",
-      () => {
-
-        scrollToNewsPage(
-          activePage - 1
-        );
-
-      }
-    );
-
-
-    newsNavigation.appendChild(
-      previousButton
-    );
-
-
-    /* =======================================================
-       NUMERI PAGINE
-    ======================================================== */
-
-    const pages =
-      getNavigationPages(
-        totalPages,
-        activePage
-      );
-
-
-    let previousPage =
-      null;
-
-
-    pages.forEach(page => {
-
-      /* ELLISSI */
-
-      if (
-        previousPage !== null &&
-        page - previousPage > 1
-      ) {
-
-        const ellipsis =
-          document.createElement(
-            "span"
-          );
-
-
-        ellipsis.className =
-          "news-nav-ellipsis";
-
-
-        ellipsis.textContent =
-          "…";
-
-
-        newsNavigation.appendChild(
-          ellipsis
-        );
-      }
-
-
-      /* BUTTON */
+    for (
+      let page = 1;
+      page <= visiblePages;
+      page += 1
+    ) {
 
       const button =
         document.createElement(
@@ -296,108 +251,226 @@ export function initNewsNavigation({
 
 
       button.className =
-        "news-page-button";
+        "news-nav-item";
 
 
-      button.textContent =
+      button.dataset.page =
         page;
 
 
-      button.setAttribute(
-        "aria-label",
-        `Vai al blocco ${page}`
-      );
+      const isAvailable =
+        page <= totalPages;
 
 
-      if (
-        page === activePage
-      ) {
+      /* =====================================================
+         BLOCCO NON ANCORA CARICATO
+      ===================================================== */
+
+      if (!isAvailable) {
 
         button.classList.add(
-          "active"
+          "is-placeholder"
         );
+
+
+        button.disabled =
+          true;
 
 
         button.setAttribute(
-          "aria-current",
-          "page"
+          "aria-label",
+          `Blocco ${page} non ancora caricato`
         );
+
+      } else {
+
+        button.setAttribute(
+          "aria-label",
+          `Vai al blocco ${page}`
+        );
+
       }
 
 
-      button.addEventListener(
-        "click",
-        () => {
+      /* =====================================================
+         NUMERO
+      ===================================================== */
 
-          scrollToNewsPage(
-            page
-          );
+      const number =
+        document.createElement(
+          "span"
+        );
 
-        }
+
+      number.className =
+        "news-nav-number";
+
+
+      number.textContent =
+        page;
+
+
+      number.setAttribute(
+        "aria-hidden",
+        "true"
       );
+
+
+      button.appendChild(
+        number
+      );
+
+
+      /* =====================================================
+         CLICK SOLO SE CARICATO
+      ===================================================== */
+
+      if (isAvailable) {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            scrollToNewsPage(
+              page
+            );
+
+          }
+        );
+
+      }
 
 
       newsNavigation.appendChild(
         button
       );
+    }
 
 
-      previousPage =
-        page;
-    });
-
-
-    /* =======================================================
-       FRECCIA SUCCESSIVA
-    ======================================================== */
-
-    const nextButton =
-      document.createElement(
-        "button"
-      );
-
-
-    nextButton.type =
-      "button";
-
-
-    nextButton.className =
-      "news-nav-arrow";
-
-
-    nextButton.textContent =
-      "›";
-
-
-    nextButton.setAttribute(
-      "aria-label",
-      "Blocco successivo"
-    );
-
-
-    nextButton.disabled =
-      activePage === totalPages;
-
-
-    nextButton.addEventListener(
-      "click",
-      () => {
-
-        scrollToNewsPage(
-          activePage + 1
-        );
-
-      }
-    );
-
-
-    newsNavigation.appendChild(
-      nextButton
-    );
-
+    updateActiveState();
 
     updateNavigationVisibility();
   }
+
+
+  /* =========================================================
+     RILEVA BLOCCO DURANTE LO SCROLL
+  ========================================================= */
+
+  function detectActivePage() {
+
+    const totalPages =
+      getTotalPages();
+
+
+    if (totalPages === 0) {
+      return;
+    }
+
+
+    /*
+      Punto di riferimento:
+      circa il 40% dello schermo.
+    */
+
+    const referencePoint =
+      window.innerHeight * 0.4;
+
+
+    let detectedPage = 1;
+
+
+    for (
+      let page = 1;
+      page <= totalPages;
+      page += 1
+    ) {
+
+      const target =
+        document.getElementById(
+          `news-page-${page}`
+        );
+
+
+      if (!target) {
+        continue;
+      }
+
+
+      const rect =
+        target.getBoundingClientRect();
+
+
+      if (
+        rect.top <=
+        referencePoint
+      ) {
+
+        detectedPage =
+          page;
+
+      } else {
+
+        break;
+
+      }
+
+    }
+
+
+    if (
+      detectedPage !==
+      activePage
+    ) {
+
+      activePage =
+        detectedPage;
+
+
+      updateActiveState();
+    }
+  }
+
+
+  /* =========================================================
+     PERFORMANCE SCROLL
+  ========================================================= */
+
+  function handleScroll() {
+
+    if (ticking) {
+      return;
+    }
+
+
+    ticking = true;
+
+
+    window.requestAnimationFrame(
+      () => {
+
+        detectActivePage();
+
+        ticking = false;
+
+      }
+    );
+  }
+
+
+  window.addEventListener(
+    "scroll",
+    handleScroll,
+    {
+      passive: true
+    }
+  );
+
+
+  window.addEventListener(
+    "resize",
+    detectActivePage
+  );
 
 
   /* =========================================================
@@ -413,17 +486,15 @@ export function initNewsNavigation({
       new IntersectionObserver(
         entries => {
 
-          entries.forEach(
-            entry => {
+          entries.forEach(entry => {
 
-              homeVisible =
-                entry.isIntersecting;
+            homeVisible =
+              entry.isIntersecting;
 
 
-              updateNavigationVisibility();
+            updateNavigationVisibility();
 
-            }
-          );
+          });
 
         },
         {
@@ -451,17 +522,15 @@ export function initNewsNavigation({
       new IntersectionObserver(
         entries => {
 
-          entries.forEach(
-            entry => {
+          entries.forEach(entry => {
 
-              newsVisible =
-                entry.isIntersecting;
+            newsVisible =
+              entry.isIntersecting;
 
 
-              updateNavigationVisibility();
+            updateNavigationVisibility();
 
-            }
-          );
+          });
 
         },
         {
@@ -492,17 +561,15 @@ export function initNewsNavigation({
       new IntersectionObserver(
         entries => {
 
-          entries.forEach(
-            entry => {
+          entries.forEach(entry => {
 
-              bookmarksVisible =
-                entry.isIntersecting;
+            bookmarksVisible =
+              entry.isIntersecting;
 
 
-              updateNavigationVisibility();
+            updateNavigationVisibility();
 
-            }
-          );
+          });
 
         },
         {
@@ -543,8 +610,20 @@ export function initNewsNavigation({
 
   function setActivePage(page) {
 
+    const totalPages =
+      getTotalPages();
+
+
+    if (totalPages === 0) {
+      return;
+    }
+
+
     activePage =
-      page;
+      Math.min(
+        Math.max(page, 1),
+        totalPages
+      );
 
 
     update();

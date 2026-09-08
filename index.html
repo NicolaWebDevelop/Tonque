@@ -76,89 +76,99 @@
        NOTIZIE
   ======================================================== -->
 
-  <section
-    id="notizie"
-    class="hero-notizie"
-  >
 
-    <div class="wrapper hero-content">
+<section
+  id="notizie"
+  class="hero-notizie"
+>
 
-      <h1>
-        NOTIZIE
-      </h1>
+  <div class="wrapper hero-content">
 
-      <p class="spazio-notizie">
-        Tutte le notizie pubblicate da Tongue in un unico posto.
-      </p>
+    <h1>
+      NOTIZIE
+    </h1>
 
-
-      <div class="container my-4">
-
-        <div id="news-container">
-
-          <div class="news-list"></div>
+    <p class="spazio-notizie">
+      Tutte le notizie pubblicate da Tongue in un unico posto.
+    </p>
 
 
-          <!-- NAVIGAZIONE NEWS + SHORTCUT SEGNALIBRI -->
+    <div class="container my-4">
 
-          <div
-            id="news-floating-controls"
-            class="news-floating-controls"
+      <!-- NEWS -->
+
+      <div id="news-container">
+
+        <div class="news-list"></div>
+
+
+        <!-- NAVIGAZIONE NEWS VERTICALE + SEGNALIBRI -->
+
+        <div
+          id="news-floating-controls"
+          class="news-floating-controls"
+        >
+
+          <nav
+            id="news-navigation"
+            class="news-navigation"
+            aria-label="Navigazione tra i blocchi di notizie"
+            hidden
+          ></nav>
+
+
+          <a
+            id="bookmark-shortcut"
+            class="bookmark-shortcut"
+            href="#segnalibri"
+            aria-label="Vai ai segnalibri salvati"
+            title="Vai ai segnalibri"
           >
 
-            <nav
-              id="news-navigation"
-              class="news-navigation"
-              aria-label="Navigazione news"
-              hidden
-            ></nav>
-
-
-            <a
-              id="bookmark-shortcut"
-              class="bookmark-shortcut"
-              href="#segnalibri"
-              aria-label="Vai ai segnalibri salvati"
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
             >
-              <span aria-hidden="true">
-                🔖
-              </span>
+              <path
+                d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z"
+                fill="currentColor"
+              />
+            </svg>
 
-              Vai ai segnalibri
-            </a>
-
-          </div>
-
-        </div>
-
-
-        <!-- LOAD MORE -->
-
-        <div class="load-more-container">
-
-          <button
-            id="load-more"
-            class="btn-glass"
-            type="button"
-          >
-            Carica altre news
-          </button>
-
-
-          <p
-            id="news-counter"
-            class="news-counter"
-          >
-            Mostrate 0 di 0 news
-          </p>
+          </a>
 
         </div>
 
       </div>
 
+
+      <!-- LOAD MORE -->
+
+      <div class="load-more-container">
+
+        <button
+          id="load-more"
+          class="btn-glass"
+          type="button"
+        >
+          Carica altre news
+        </button>
+
+
+        <p
+          id="news-counter"
+          class="news-counter"
+        >
+          Mostrate 0 di 0 news
+        </p>
+
+      </div>
+
     </div>
 
-  </section>
+  </div>
+
+</section>
 
 
   <!-- =======================================================
@@ -366,7 +376,16 @@
           </button>
 
         </div>
-
+<p class="pexels-credit">
+  Immagini fornite da
+  <a
+    href="https://www.pexels.com"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Pexels.
+  </a>
+</p>
       </div>
 
     </div>

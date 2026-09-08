@@ -1,37 +1,37 @@
+@use "../base/variables" as *;
+
+
 /* =========================================================
-   CONTENITORE NAVIGAZIONE + SEGNALIBRI
+   MENU NEWS VERTICALE
 ========================================================= */
 
 .news-floating-controls {
   position: fixed;
 
-  left: 50%;
-  bottom: 16px;
+  top: 50%;
+  left: 22px;
 
-  transform: translateX(-50%);
+  transform: translateY(-50%);
 
   z-index: 100;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
-  gap: 10px;
-
-  width: fit-content;
+  gap: 12px;
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
-  transition:
-    opacity 0.25s ease,
-    visibility 0.25s ease;
+  transition: $transition-base;
 }
 
 
-/* VISIBILE SOLO NELLA SEZIONE NEWS */
+/* =========================================================
+   VISIBILE SOLO NELLA SEZIONE NEWS
+========================================================= */
 
 .news-floating-controls.is-visible {
   opacity: 1;
@@ -41,41 +41,20 @@
 
 
 /* =========================================================
-   NAVIGAZIONE NEWS
+   NAVIGAZIONE
 ========================================================= */
 
 .news-navigation {
-  width: fit-content;
-
-  margin: 0;
-
-  padding: 8px 10px;
-
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
 
   gap: 6px;
 
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.18);
-
-  border-radius: 14px;
-
-  background:
-    rgba(18, 20, 25, 0.92);
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 10px 30px
-    rgba(0, 0, 0, 0.35);
+  margin: 0;
+  padding: 0;
 }
 
-
-/* NASCOSTO PRIMA DEL CARICAMENTO */
 
 .news-navigation[hidden] {
   display: none;
@@ -83,99 +62,50 @@
 
 
 /* =========================================================
-   SHORTCUT SEGNALIBRI
+   ITEM NUMERICO
 ========================================================= */
 
-.bookmark-shortcut {
+.news-nav-item {
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  gap: 7px;
-
-  width: fit-content;
-
-  padding: 8px 14px;
-
   border:
     1px solid
-    rgba(255, 255, 255, 0.18);
+    transparent;
 
-  border-radius: 12px;
+  border-radius: 50%;
 
   background:
-    rgba(18, 20, 25, 0.88);
+    transparent;
 
-  color: #fff;
-
-  text-decoration: none;
-
-  font-size: 0.82rem;
-  font-weight: 500;
+  color:
+    rgba($text-main, 0.58);
 
   cursor: pointer;
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  font-family: inherit;
 
-  box-shadow:
-    0 8px 24px
-    rgba(0, 0, 0, 0.28);
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-
-/* HOVER SHORTCUT */
-
-.bookmark-shortcut:hover {
-  transform: translateY(-2px);
-
-  background:
-    rgba(255, 255, 255, 0.12);
-
-  border-color:
-    rgba(255, 255, 255, 0.35);
+  transition: $transition-base;
 }
 
 
 /* =========================================================
-   NUMERI E FRECCE
+   NUMERO
 ========================================================= */
 
-.news-page-button,
-.news-nav-arrow {
-  min-width: 36px;
-  height: 36px;
+.news-nav-number {
+  font-size: 0.82rem;
+  font-weight: 500;
 
-  padding: 0 10px;
+  line-height: 1;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.18);
-
-  border-radius: 9px;
-
-  background:
-    rgba(255, 255, 255, 0.05);
-
-  color: #fff;
-
-  cursor: pointer;
-
-  font-size: 0.9rem;
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
+  transition: $transition-base;
 }
 
 
@@ -183,56 +113,130 @@
    HOVER
 ========================================================= */
 
-.news-page-button:hover,
-.news-nav-arrow:hover:not(:disabled) {
-  transform: translateY(-2px);
+.news-nav-item:not(.is-placeholder):hover {
+  color:
+    $text-main;
 
   background:
-    rgba(255, 255, 255, 0.12);
+    rgba($text-main, 0.08);
 
   border-color:
-    rgba(255, 255, 255, 0.35);
+    rgba($text-main, 0.12);
+
+  transform:
+    translateX(3px);
 }
 
 
 /* =========================================================
-   PAGINA ATTIVA
+   BLOCCO ATTIVO
 ========================================================= */
 
-.news-page-button.active {
-  background:
-    rgba(170, 35, 35, 0.9);
+.news-nav-item.active {
+  color:
+    $text-main;
 
-  border-color:
-    rgba(255, 90, 90, 0.65);
+  box-shadow:
+    $glass-shadow;
+
+  transform:
+    translateX(5px)
+    scale(1.08);
+}
+
+
+.news-nav-item.active
+.news-nav-number {
+  font-weight: 700;
+
+  transform:
+    scale(1.08);
 }
 
 
 /* =========================================================
-   FRECCE DISABILITATE
+   BLOCCO NON ANCORA CARICATO
 ========================================================= */
 
-.news-nav-arrow:disabled {
-  opacity: 0.3;
+.news-nav-item.is-placeholder {
+  opacity: 0.28;
 
   cursor: default;
 }
 
 
 /* =========================================================
-   PUNTINI
+   SEGNALIBRI
 ========================================================= */
 
-.news-nav-ellipsis {
-  padding: 0 4px;
+.bookmark-shortcut {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 4px;
+
+  border:
+    1px solid
+    $glass-border;
+
+  border-radius: 50%;
+
+  background:
+    rgba($bg-main, 0.72);
 
   color:
-    rgba(255, 255, 255, 0.6);
+    rgba($text-main, 0.72);
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  backdrop-filter:
+    blur(8px);
+
+  -webkit-backdrop-filter:
+    blur(8px);
+
+  box-shadow:
+    $glass-shadow;
+
+  transition:
+    $transition-base;
+}
+
+
+.bookmark-shortcut svg {
+  width: 15px;
+  height: 15px;
 }
 
 
 /* =========================================================
-   SCROLL AI BLOCCHI
+   HOVER SEGNALIBRO
+========================================================= */
+
+.bookmark-shortcut:hover {
+  transform:
+    translateX(3px)
+    scale(1.05);
+
+  color:
+    $text-main;
+
+  background:
+    rgba($accent, 0.85);
+
+  border-color:
+    rgba($accent, 0.55);
+}
+
+
+/* =========================================================
+   SCROLL AI BLOCCHI NEWS
 ========================================================= */
 
 .news-page-start {
@@ -247,40 +251,44 @@
 @media (max-width: 600px) {
 
   .news-floating-controls {
-    bottom: 10px;
+    left: 8px;
 
-    max-width:
-      calc(100vw - 24px);
-
-    gap: 8px;
+    gap: 10px;
   }
 
 
   .news-navigation {
-    max-width:
-      calc(100vw - 24px);
-
-    padding: 7px;
-
     gap: 4px;
   }
 
 
-  .news-page-button,
-  .news-nav-arrow {
-    min-width: 32px;
-    height: 32px;
+  .news-nav-item {
+    width: 30px;
+    height: 30px;
+  }
 
-    padding: 0 8px;
 
-    font-size: 0.82rem;
+  .news-nav-number {
+    font-size: 0.74rem;
+  }
+
+
+  .news-nav-item.active {
+    transform:
+      translateX(2px)
+      scale(1.05);
   }
 
 
   .bookmark-shortcut {
-    padding: 7px 12px;
+    width: 27px;
+    height: 27px;
+  }
 
-    font-size: 0.78rem;
+
+  .bookmark-shortcut svg {
+    width: 13px;
+    height: 13px;
   }
 
 
