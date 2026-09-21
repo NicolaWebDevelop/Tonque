@@ -94,3 +94,20 @@
   text-decoration: underline;
   font-size: inherit;
 }
+
+
+.footer-made-by {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  text-align: center;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
