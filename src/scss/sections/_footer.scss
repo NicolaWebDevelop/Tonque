@@ -1,8 +1,6 @@
 @use "../base/variables" as *;
 
-/* =========================
-   FOOTER GLASS
-========================= */
+/* FOOTER GLASS */
 
 .footer-glass {
   padding: 60px 20px;
@@ -11,9 +9,7 @@
   color: #fff;
 }
 
-/* =========================
-   LAYOUT CENTRATO
-========================= */
+/* LAYOUT CENTRATO */
 
 .footer-inner {
   max-width: 1200px;
@@ -24,9 +20,7 @@
   align-items: center;
 }
 
-/* =========================
-   CONTENUTO
-========================= */
+/* CONTENUTO */
 
 .footer-center {
   display: flex;
@@ -47,9 +41,7 @@
   opacity: 0.65;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
 @media (max-width: 768px) {
   .footer-glass {
@@ -64,7 +56,6 @@
     font-size: 0.8rem;
   }
 }
-
 
 .footer-legal {
   display: flex;
@@ -93,9 +84,7 @@
   }
 }
 
-/* =========================================================
-   8️⃣ FOOTER LINK
-========================================================= */
+/* 8️⃣ FOOTER LINK */
 
 .footer-link {
   background: none;

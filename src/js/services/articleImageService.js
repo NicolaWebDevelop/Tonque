@@ -1,10 +1,6 @@
-/* =========================================================
-   ARTICLE IMAGE SERVICE
-========================================================= */
+/* ARTICLE IMAGE SERVICE */
 
-const FUNCTION_URL =
-  "/.netlify/functions/article-image";
-
+const FUNCTION_URL = "/.netlify/functions/article-image";
 
 /*
   Cache in memoria.
@@ -14,146 +10,65 @@ const FUNCTION_URL =
   la chiamata alla Function.
 */
 
-const imageCache =
-  new Map();
+const imageCache = new Map();
 
+/* GET ARTICLE IMAGE */
 
-/* =========================================================
-   GET ARTICLE IMAGE
-========================================================= */
+export async function getArticleImage({ id, url, title }) {
+  /* CACHE KEY */
 
-export async function getArticleImage({
-  id,
-  url,
-  title
-}) {
+  const cacheKey = id || url || title;
 
-  /* =======================================================
-     CACHE KEY
-  ======================================================== */
-
-  const cacheKey =
-    id ||
-    url ||
-    title;
-
-
-  if (
-    cacheKey &&
-    imageCache.has(cacheKey)
-  ) {
-
-    return imageCache.get(
-      cacheKey
-    );
+  if (cacheKey && imageCache.has(cacheKey)) {
+    return imageCache.get(cacheKey);
   }
 
+  /* PARAMETRI */
 
-  /* =======================================================
-     PARAMETRI
-  ======================================================== */
-
-  const params =
-    new URLSearchParams();
-
+  const params = new URLSearchParams();
 
   if (url) {
-
-    params.set(
-      "url",
-      url
-    );
-
+    params.set("url", url);
   }
-
 
   if (title) {
-
-    params.set(
-      "title",
-      title
-    );
-
+    params.set("title", title);
   }
 
-
-  /* =======================================================
-     REQUEST
-  ======================================================== */
+  /* REQUEST */
 
   try {
-
-    const response =
-      await fetch(
-        `${FUNCTION_URL}?${params.toString()}`
-      );
-
+    const response = await fetch(`${FUNCTION_URL}?${params.toString()}`);
 
     if (!response.ok) {
-
-      throw new Error(
-        `Errore immagini: ${response.status}`
-      );
-
+      throw new Error(`Errore immagini: ${response.status}`);
     }
 
-
-    const data =
-      await response.json();
-
+    const data = await response.json();
 
     const result = {
+      imageUrl: data.imageUrl || null,
 
-      imageUrl:
-        data.imageUrl ||
-        null,
+      source: data.source || "fallback",
 
-      source:
-        data.source ||
-        "fallback",
+      photographer: data.photographer || null,
 
-      photographer:
-        data.photographer ||
-        null,
+      photographerUrl: data.photographerUrl || null,
 
-      photographerUrl:
-        data.photographerUrl ||
-        null,
+      photoUrl: data.photoUrl || null,
 
-      photoUrl:
-        data.photoUrl ||
-        null,
-
-      query:
-        data.query ||
-        null
-
+      query: data.query || null,
     };
 
-
-    /* =====================================================
-       SALVA IN CACHE
-    ====================================================== */
+    /* SALVA IN CACHE */
 
     if (cacheKey) {
-
-      imageCache.set(
-        cacheKey,
-        result
-      );
-
+      imageCache.set(cacheKey, result);
     }
 
-
     return result;
-
   } catch (error) {
-
-    console.warn(
-      "Immagine news non disponibile:",
-      error
-    );
-
+    console.warn("Immagine news non disponibile:", error);
 
     return {
       imageUrl: null,
@@ -161,8 +76,7 @@ export async function getArticleImage({
       photographer: null,
       photographerUrl: null,
       photoUrl: null,
-      query: null
+      query: null,
     };
-
   }
 }

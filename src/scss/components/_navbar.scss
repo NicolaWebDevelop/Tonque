@@ -1,9 +1,6 @@
 @use "../base/variables" as *;
 
-
-/* =========================================================
-   MENU NEWS VERTICALE
-========================================================= */
+/* MENU NEWS VERTICALE */
 
 .news-floating-controls {
   position: fixed;
@@ -28,10 +25,7 @@
   transition: $transition-base;
 }
 
-
-/* =========================================================
-   VISIBILE SOLO NELLA SEZIONE NEWS
-========================================================= */
+/* VISIBILE SOLO NELLA SEZIONE NEWS */
 
 .news-floating-controls.is-visible {
   opacity: 1;
@@ -39,10 +33,7 @@
   pointer-events: auto;
 }
 
-
-/* =========================================================
-   NAVIGAZIONE
-========================================================= */
+/* NAVIGAZIONE */
 
 .news-navigation {
   display: flex;
@@ -55,15 +46,11 @@
   padding: 0;
 }
 
-
 .news-navigation[hidden] {
   display: none;
 }
 
-
-/* =========================================================
-   ITEM NUMERICO
-========================================================= */
+/* ITEM NUMERICO */
 
 .news-nav-item {
   width: 36px;
@@ -75,17 +62,13 @@
   align-items: center;
   justify-content: center;
 
-  border:
-    1px solid
-    transparent;
+  border: 1px solid transparent;
 
   border-radius: 50%;
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    rgba($text-main, 0.58);
+  color: rgba($text-main, 0.58);
 
   cursor: pointer;
 
@@ -94,10 +77,7 @@
   transition: $transition-base;
 }
 
-
-/* =========================================================
-   NUMERO
-========================================================= */
+/* NUMERO */
 
 .news-nav-number {
   font-size: 0.82rem;
@@ -108,55 +88,35 @@
   transition: $transition-base;
 }
 
-
-/* =========================================================
-   HOVER
-========================================================= */
+/* HOVER */
 
 .news-nav-item:not(.is-placeholder):hover {
-  color:
-    $text-main;
+  color: $text-main;
 
-  background:
-    rgba($text-main, 0.08);
+  background: rgba($text-main, 0.08);
 
-  border-color:
-    rgba($text-main, 0.12);
+  border-color: rgba($text-main, 0.12);
 
-  transform:
-    translateX(3px);
+  transform: translateX(3px);
 }
 
-
-/* =========================================================
-   BLOCCO ATTIVO
-========================================================= */
+/* BLOCCO ATTIVO */
 
 .news-nav-item.active {
-  color:
-    $text-main;
+  color: $text-main;
 
-  box-shadow:
-    $glass-shadow;
+  box-shadow: $glass-shadow;
 
-  transform:
-    translateX(5px)
-    scale(1.08);
+  transform: translateX(5px) scale(1.08);
 }
 
-
-.news-nav-item.active
-.news-nav-number {
+.news-nav-item.active .news-nav-number {
   font-weight: 700;
 
-  transform:
-    scale(1.08);
+  transform: scale(1.08);
 }
 
-
-/* =========================================================
-   BLOCCO NON ANCORA CARICATO
-========================================================= */
+/* BLOCCO NON ANCORA CARICATO */
 
 .news-nav-item.is-placeholder {
   opacity: 0.28;
@@ -164,10 +124,7 @@
   cursor: default;
 }
 
-
-/* =========================================================
-   SEGNALIBRI
-========================================================= */
+/* SEGNALIBRI */
 
 .bookmark-shortcut {
   width: 32px;
@@ -179,118 +136,85 @@
 
   margin-top: 4px;
 
-  border:
-    1px solid
-    $glass-border;
+  border: 1px solid $glass-border;
 
   border-radius: 50%;
 
-  background:
-    rgba($bg-main, 0.72);
+  background: rgba($bg-main, 0.72);
 
-  color:
-    rgba($text-main, 0.72);
+  color: rgba($text-main, 0.72);
 
   text-decoration: none;
 
   cursor: pointer;
 
-  backdrop-filter:
-    blur(8px);
+  backdrop-filter: blur(8px);
 
-  -webkit-backdrop-filter:
-    blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
-  box-shadow:
-    $glass-shadow;
+  box-shadow: $glass-shadow;
 
-  transition:
-    $transition-base;
+  transition: $transition-base;
 }
-
 
 .bookmark-shortcut svg {
   width: 15px;
   height: 15px;
 }
 
-
-/* =========================================================
-   HOVER SEGNALIBRO
-========================================================= */
+/* HOVER SEGNALIBRO */
 
 .bookmark-shortcut:hover {
-  transform:
-    translateX(3px)
-    scale(1.05);
+  transform: translateX(3px) scale(1.05);
 
-  color:
-    $text-main;
+  color: $text-main;
 
-  background:
-    rgba($accent, 0.85);
+  background: rgba($accent, 0.85);
 
-  border-color:
-    rgba($accent, 0.55);
+  border-color: rgba($accent, 0.55);
 }
 
-
-/* =========================================================
-   SCROLL AI BLOCCHI NEWS
-========================================================= */
+/* SCROLL AI BLOCCHI NEWS */
 
 .news-page-start {
   scroll-margin-top: 30px;
 }
 
-
-/* =========================================================
-   MOBILE
-========================================================= */
+/* MOBILE */
 
 @media (max-width: 600px) {
-
   .news-floating-controls {
     left: 8px;
 
     gap: 10px;
   }
 
-
   .news-navigation {
     gap: 4px;
   }
-
 
   .news-nav-item {
     width: 30px;
     height: 30px;
   }
 
-
   .news-nav-number {
     font-size: 0.74rem;
   }
 
-
   .news-nav-item.active {
-    transform:
-      translateX(2px)
-      scale(1.05);
+    transform: translateX(2px) scale(1.05);
   }
-
 
   .bookmark-shortcut {
     width: 27px;
     height: 27px;
   }
 
-
   .bookmark-shortcut svg {
     width: 13px;
     height: 13px;
   }
-
 
   .news-page-start {
     scroll-margin-top: 20px;

@@ -1,8 +1,6 @@
 @use "../base/variables" as *;
 
-/* =========================================================
-   HERO SECTIONS
-========================================================= */
+/* HERO SECTIONS */
 
 .hero-notizie,
 .hero-segnalibri {
@@ -13,28 +11,17 @@
 
 .hero-notizie {
   background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.78),
-      rgba(0, 0, 0, 0.25)
-    ),
-    url("https://cdn.pixabay.com/photo/2020/11/07/01/28/abstract-5719221_1280.jpg")
-    center / cover no-repeat;
+    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.25)),
+    url("https://cdn.pixabay.com/photo/2020/11/07/01/28/abstract-5719221_1280.jpg") center / cover no-repeat;
 }
 
 .hero-segnalibri {
   background:
-    linear-gradient(
-      rgba(0, 0, 0, 0.25),
-      rgba(0, 0, 0, 0.25)
-    ),
-    url("https://cdn.pixabay.com/photo/2015/01/14/09/02/newspaper-598903_1280.jpg")
-    center / cover no-repeat;
+    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url("https://cdn.pixabay.com/photo/2015/01/14/09/02/newspaper-598903_1280.jpg") center / cover no-repeat;
 }
 
-
-/* =========================================================
-   NEWS GRID
-========================================================= */
+/* NEWS GRID */
 
 #news-container {
   margin-top: 32px;
@@ -46,10 +33,7 @@
   gap: 24px;
 }
 
-
-/* =========================================================
-   CARD NEWS
-========================================================= */
+/* CARD NEWS */
 
 .news-card {
   background: rgba(255, 255, 255, 0.15);
@@ -76,9 +60,7 @@
   &:hover {
     transform: translateY(-6px);
 
-    box-shadow:
-      0 20px 40px
-      rgba(0, 0, 0, 0.35);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
   }
 
   img {
@@ -112,35 +94,25 @@
   }
 }
 
-
-/* =========================================================
-   ARROW ANIMATION
-========================================================= */
+/* ARROW ANIMATION */
 
 .news-card .btn-glass .arrow {
   display: inline-block;
 
-  transition:
-    transform 0.25s ease;
+  transition: transform 0.25s ease;
 }
 
 .news-card .btn-glass:hover .arrow {
   transform: translateX(4px);
 }
 
-
-/* =========================================================
-   LOADING STATE
-========================================================= */
+/* LOADING STATE */
 
 #news-container.is-loading {
   pointer-events: none;
 }
 
-
-/* =========================================================
-   LOAD MORE
-========================================================= */
+/* LOAD MORE */
 
 .load-more-container {
   display: flex;
@@ -150,10 +122,7 @@
   margin-top: 40px;
 }
 
-
-/* =========================================================
-   COUNTER
-========================================================= */
+/* COUNTER */
 
 .news-counter {
   margin-top: 24px;
@@ -165,70 +134,48 @@
   opacity: 0.75;
 }
 
-
-/* =========================================================
-   LEGAL LOGO
-========================================================= */
+/* LEGAL LOGO */
 
 .legal-logo {
   display: block;
 
-  margin:
-    0 auto
-    20px auto;
+  margin: 0 auto 20px auto;
 }
 
-
-/* =========================================================
-   ANIMATION
-========================================================= */
+/* ANIMATION */
 
 @keyframes fadeIn {
-
   from {
     opacity: 0;
 
-    transform:
-      translateY(10px);
+    transform: translateY(10px);
   }
 
   to {
     opacity: 1;
 
-    transform:
-      translateY(0);
+    transform: translateY(0);
   }
 }
 
-
-/* =========================================================
-   TABLET
-========================================================= */
+/* TABLET */
 
 @media (max-width: 1024px) {
-
   .news-list {
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-
-/* =========================================================
-   MOBILE
-========================================================= */
+/* MOBILE */
 
 @media (max-width: 600px) {
-
   .news-list {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .hero-notizie,
   .hero-segnalibri {
-    padding:
-      80px 16px;
+    padding: 80px 16px;
   }
 
   .news-card img {

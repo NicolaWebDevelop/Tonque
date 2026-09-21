@@ -1,241 +1,138 @@
-/* =========================================================
-   NETLIFY FUNCTION
-   RICERCA IMMAGINE PERTINENTE SU PEXELS
-========================================================= */
+/* NETLIFY FUNCTION
+   RICERCA IMMAGINE PERTINENTE SU PEXELS */
 
 export default async function handler(request) {
-
-  /* =======================================================
-     SOLO GET
-  ======================================================== */
+  /* SOLO GET */
 
   if (request.method !== "GET") {
-
     return Response.json(
       {
-        error: "Metodo non consentito"
+        error: "Metodo non consentito",
       },
       {
-        status: 405
-      }
+        status: 405,
+      },
     );
   }
 
+  /* PARAMETRI */
 
-  /* =======================================================
-     PARAMETRI
-  ======================================================== */
+  const requestUrl = new URL(request.url);
 
-  const requestUrl =
-    new URL(request.url);
-
-
-  const title =
-    requestUrl.searchParams.get(
-      "title"
-    );
-
+  const title = requestUrl.searchParams.get("title");
 
   if (!title) {
-
-    return Response.json(
-      {
-        imageUrl: null,
-        source: "fallback",
-        error: "Titolo mancante"
-      }
-    );
+    return Response.json({
+      imageUrl: null,
+      source: "fallback",
+      error: "Titolo mancante",
+    });
   }
 
+  /* API KEY */
 
-  /* =======================================================
-     API KEY
-  ======================================================== */
-
-  const apiKey =
-    process.env.PEXELS_API_KEY;
-
+  const apiKey = process.env.PEXELS_API_KEY;
 
   if (!apiKey) {
-
-    console.error(
-      "PEXELS_API_KEY non trovata"
-    );
-
+    console.error("PEXELS_API_KEY non trovata");
 
     return Response.json(
       {
         imageUrl: null,
         source: "fallback",
-        error: "PEXELS_API_KEY non configurata"
+        error: "PEXELS_API_KEY non configurata",
       },
       {
-        status: 500
-      }
+        status: 500,
+      },
     );
   }
 
+  /* CREA QUERY */
 
-  /* =======================================================
-     CREA QUERY
-  ======================================================== */
+  const query = title
+    .replace(/[^a-zA-Z0-9\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .slice(0, 8)
+    .join(" ");
 
-  const query =
-    title
-      .replace(
-        /[^a-zA-Z0-9\s-]/g,
-        " "
-      )
-      .replace(
-        /\s+/g,
-        " "
-      )
-      .trim()
-      .split(" ")
-      .slice(0, 8)
-      .join(" ");
-
-
-  /* =======================================================
-     RICHIESTA PEXELS
-  ======================================================== */
+  /* RICHIESTA PEXELS */
 
   try {
+    const pexelsUrl = new URL("https://api.pexels.com/v1/search");
 
-    const pexelsUrl =
-      new URL(
-        "https://api.pexels.com/v1/search"
-      );
+    pexelsUrl.searchParams.set("query", query);
 
+    pexelsUrl.searchParams.set("per_page", "1");
 
-    pexelsUrl.searchParams.set(
-      "query",
-      query
-    );
+    pexelsUrl.searchParams.set("orientation", "landscape");
 
-
-    pexelsUrl.searchParams.set(
-      "per_page",
-      "1"
-    );
-
-
-    pexelsUrl.searchParams.set(
-      "orientation",
-      "landscape"
-    );
-
-
-    const response =
-      await fetch(
-        pexelsUrl,
-        {
-          headers: {
-            Authorization:
-              apiKey
-          }
-        }
-      );
-
+    const response = await fetch(pexelsUrl, {
+      headers: {
+        Authorization: apiKey,
+      },
+    });
 
     if (!response.ok) {
+      const errorText = await response.text();
 
-      const errorText =
-        await response.text();
-
-
-      console.error(
-        "Errore Pexels:",
-        response.status,
-        errorText
-      );
-
-
-      return Response.json(
-        {
-          imageUrl: null,
-          source: "fallback",
-          error:
-            `Pexels ${response.status}`
-        }
-      );
-    }
-
-
-    const data =
-      await response.json();
-
-
-    const photo =
-      data.photos?.[0];
-
-
-    if (!photo) {
+      console.error("Errore Pexels:", response.status, errorText);
 
       return Response.json({
         imageUrl: null,
         source: "fallback",
-        query
+        error: `Pexels ${response.status}`,
       });
     }
 
+    const data = await response.json();
 
-    /* =====================================================
-       RISULTATO
-    ====================================================== */
+    const photo = data.photos?.[0];
+
+    if (!photo) {
+      return Response.json({
+        imageUrl: null,
+        source: "fallback",
+        query,
+      });
+    }
+
+    /* RISULTATO */
 
     return Response.json(
       {
-        imageUrl:
-          photo.src?.large ||
-          photo.src?.landscape ||
-          photo.src?.medium ||
-          null,
+        imageUrl: photo.src?.large || photo.src?.landscape || photo.src?.medium || null,
 
-        source:
-          "pexels",
+        source: "pexels",
 
-        photographer:
-          photo.photographer ||
-          null,
+        photographer: photo.photographer || null,
 
-        photographerUrl:
-          photo.photographer_url ||
-          null,
+        photographerUrl: photo.photographer_url || null,
 
-        photoUrl:
-          photo.url ||
-          null,
+        photoUrl: photo.url || null,
 
-        query
+        query,
       },
       {
         headers: {
-          "Cache-Control":
-            "public, max-age=86400"
-        }
-      }
+          "Cache-Control": "public, max-age=86400",
+        },
+      },
     );
-
-
   } catch (error) {
-
-    console.error(
-      "Errore ricerca immagine:",
-      error
-    );
-
+    console.error("Errore ricerca immagine:", error);
 
     return Response.json(
       {
         imageUrl: null,
         source: "fallback",
-        error:
-          error.message
+        error: error.message,
       },
       {
-        status: 500
-      }
+        status: 500,
+      },
     );
   }
 }

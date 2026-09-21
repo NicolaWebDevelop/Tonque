@@ -1,6 +1,5 @@
 @use "../base/variables" as *;
 
-
 .hero {
   min-height: 100vh;
   min-height: 100svh;
@@ -15,7 +14,6 @@
 
   overflow: hidden;
 }
-
 
 .hero-notizie {
   min-height: 100vh;
@@ -40,10 +38,10 @@
   padding: 24px;
 }
 
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
   .hero {
     background: url("/src/img/heromobile.jpg") center / cover no-repeat;
-  background-color: $bg-hero;
+    background-color: $bg-hero;
     background-position: 42.99%;
   }
 }

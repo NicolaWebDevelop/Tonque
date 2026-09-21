@@ -1,7 +1,5 @@
 @use "../base/variables" as *;
 
-
-
 /* BACK TO TOP (unico elemento fisso) */
 #backToTop {
   position: fixed;
@@ -24,7 +22,9 @@
   pointer-events: none;
   transform: translateY(10px);
 
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 #backToTop.show {

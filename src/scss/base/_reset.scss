@@ -4,11 +4,12 @@
   box-sizing: border-box;
 }
 
-html, body {
- margin: 0;
+html,
+body {
+  margin: 0;
   padding-top: 0;
   background-color: red;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 img {
@@ -16,7 +17,7 @@ img {
   display: block;
 }
 
-a{
+a {
   color: white !important;
   cursor: pointer;
   text-decoration: none !important;

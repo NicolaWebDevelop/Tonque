@@ -1,30 +1,16 @@
 import { formatDate } from "./utils/formatDate.js";
 
-import {
-  isBookmarked,
-  toggleBookmark as toggleBookmarkData
-} from "./services/bookmarkService.js";
+import { isBookmarked, toggleBookmark as toggleBookmarkData } from "./services/bookmarkService.js";
 
-import {
-  getLatestIds,
-  getNewsById
-} from "./services/hackerNewsService.js";
+import { getLatestIds, getNewsById } from "./services/hackerNewsService.js";
 
-import {
-  initNewsNavigation
-} from "./navigatore.js";
+import { initNewsNavigation } from "./navigatore.js";
 
-import {
-  getArticleImage
-} from "./services/articleImageService.js";
+import { getArticleImage } from "./services/articleImageService.js";
 
+/* IMMAGINE FALLBACK TONGUE */
 
-/* =========================================================
-   IMMAGINE FALLBACK TONGUE
-========================================================= */
-
-const NEWS_FALLBACK_IMAGE =
-  `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+const NEWS_FALLBACK_IMAGE = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="600"
@@ -63,531 +49,260 @@ const NEWS_FALLBACK_IMAGE =
     </svg>
   `)}`;
 
+/* CARICA IMMAGINE PERTINENTE */
 
-/* =========================================================
-   CARICA IMMAGINE PERTINENTE
-========================================================= */
-
-async function setRelevantNewsImage(
-  imageElement,
-  news
-) {
-
+async function setRelevantNewsImage(imageElement, news) {
   if (!imageElement) {
     return;
   }
 
+  /* FALLBACK IMMEDIATO */
 
-  /* =======================================================
-     FALLBACK IMMEDIATO
-  ======================================================== */
+  imageElement.src = NEWS_FALLBACK_IMAGE;
 
-  imageElement.src =
-    NEWS_FALLBACK_IMAGE;
+  imageElement.loading = "lazy";
 
-  imageElement.loading =
-    "lazy";
+  imageElement.decoding = "async";
 
-  imageElement.decoding =
-    "async";
-
-  imageElement.alt =
-    news?.title
-      ? `Immagine relativa a ${news.title}`
-      : "Immagine notizia";
-
+  imageElement.alt = news?.title ? `Immagine relativa a ${news.title}` : "Immagine notizia";
 
   try {
+    /* CERCA IMMAGINE */
 
-    /* =====================================================
-       CERCA IMMAGINE
-    ====================================================== */
-
-    const result =
-      await getArticleImage({
-        id: news?.id,
-        url: news?.url,
-        title: news?.title
-      });
-
+    const result = await getArticleImage({
+      id: news?.id,
+      url: news?.url,
+      title: news?.title,
+    });
 
     if (!result?.imageUrl) {
       return;
     }
 
+    /* ERRORE IMMAGINE REMOTA */
 
-    /* =====================================================
-       ERRORE IMMAGINE REMOTA
-    ====================================================== */
+    imageElement.onerror = () => {
+      imageElement.onerror = null;
 
-    imageElement.onerror =
-      () => {
+      imageElement.src = NEWS_FALLBACK_IMAGE;
+    };
 
-        imageElement.onerror =
-          null;
+    /* SALVA FONTE IMMAGINE */
 
-        imageElement.src =
-          NEWS_FALLBACK_IMAGE;
-      };
+    imageElement.dataset.imageSource = result.source;
 
+    /* MOSTRA IMMAGINE */
 
-    /* =====================================================
-       SALVA FONTE IMMAGINE
-    ====================================================== */
-
-    imageElement.dataset.imageSource =
-      result.source;
-
-
-    /* =====================================================
-       MOSTRA IMMAGINE
-    ====================================================== */
-
-    imageElement.src =
-      result.imageUrl;
-
+    imageElement.src = result.imageUrl;
   } catch (error) {
-
-    console.warn(
-      "Errore caricamento immagine news:",
-      error
-    );
+    console.warn("Errore caricamento immagine news:", error);
   }
 }
 
+/* DOM READY */
 
-/* =========================================================
-   DOM READY
-========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  /* ELEMENTI DOM */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+  const newsList = document.querySelector(".news-list");
 
-    /* =====================================================
-       ELEMENTI DOM
-    ====================================================== */
+  const bookmarkList = document.querySelector(".bookmark-list");
 
-    const newsList =
-      document.querySelector(
-        ".news-list"
-      );
+  const loadMoreButton = document.getElementById("load-more");
 
-    const bookmarkList =
-      document.querySelector(
-        ".bookmark-list"
-      );
+  const counter = document.getElementById("news-counter");
 
-    const loadMoreButton =
-      document.getElementById(
-        "load-more"
-      );
+  const newsNavigation = document.getElementById("news-navigation");
 
-    const counter =
-      document.getElementById(
-        "news-counter"
-      );
+  const newsSection = document.getElementById("notizie");
 
-    const newsNavigation =
-      document.getElementById(
-        "news-navigation"
-      );
+  /* BOOKMARK DOM */
 
-    const newsSection =
-      document.getElementById(
-        "notizie"
-      );
+  const bookmarkLoadMoreButton = document.getElementById("bookmark-load-more");
 
+  const bookmarkCounter = document.getElementById("bookmark-counter");
 
-    /* =====================================================
-       BOOKMARK DOM
-    ====================================================== */
+  const bookmarkMoreContainer = document.getElementById("bookmark-more-container");
 
-    const bookmarkLoadMoreButton =
-      document.getElementById(
-        "bookmark-load-more"
-      );
+  const bookmarkClearButton = document.getElementById("bookmark-clear-all");
 
-    const bookmarkCounter =
-      document.getElementById(
-        "bookmark-counter"
-      );
+  const bookmarkClearModal = document.getElementById("bookmark-clear-modal");
 
-    const bookmarkMoreContainer =
-      document.getElementById(
-        "bookmark-more-container"
-      );
+  const bookmarkClearCancel = document.getElementById("bookmark-clear-cancel");
 
-    const bookmarkClearButton =
-      document.getElementById(
-        "bookmark-clear-all"
-      );
+  const bookmarkClearConfirm = document.getElementById("bookmark-clear-confirm");
 
-    const bookmarkClearModal =
-      document.getElementById(
-        "bookmark-clear-modal"
-      );
+  const bookmarkClearOverlay = document.querySelector(".bookmark-clear-overlay");
 
-    const bookmarkClearCancel =
-      document.getElementById(
-        "bookmark-clear-cancel"
-      );
+  /* CONTROLLO ELEMENTI PRINCIPALI */
 
-    const bookmarkClearConfirm =
-      document.getElementById(
-        "bookmark-clear-confirm"
-      );
+  if (!newsList || !loadMoreButton) {
+    return;
+  }
 
-    const bookmarkClearOverlay =
-      document.querySelector(
-        ".bookmark-clear-overlay"
-      );
+  /* STATE */
 
+  let newsIds = [];
 
-    /* =====================================================
-       CONTROLLO ELEMENTI PRINCIPALI
-    ====================================================== */
+  let currentIndex = 0;
 
-    if (
-      !newsList ||
-      !loadMoreButton
-    ) {
+  const PAGE_SIZE = 10;
+
+  const BOOKMARK_PAGE_SIZE = 10;
+
+  let visibleBookmarks = BOOKMARK_PAGE_SIZE;
+
+  let isLoading = false;
+
+  let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+
+  /* NEWS NAVIGATOR */
+
+  const newsNavigator = initNewsNavigation({
+    newsNavigation,
+    newsSection,
+    pageSize: PAGE_SIZE,
+    getCurrentIndex: () => currentIndex,
+  });
+
+  /* APRI MODALE CANCELLA SEGNALIBRI */
+
+  function openBookmarkClearModal() {
+    if (!bookmarkClearModal || bookmarks.length === 0) {
       return;
     }
 
+    bookmarkClearModal.hidden = false;
 
-    /* =====================================================
-       STATE
-    ====================================================== */
+    document.body.style.overflow = "hidden";
 
-    let newsIds =
-      [];
+    bookmarkClearCancel?.focus();
+  }
 
-    let currentIndex =
-      0;
+  /* CHIUDI MODALE */
 
-    const PAGE_SIZE =
-      10;
-
-    const BOOKMARK_PAGE_SIZE =
-      10;
-
-    let visibleBookmarks =
-      BOOKMARK_PAGE_SIZE;
-
-    let isLoading =
-      false;
-
-    let bookmarks =
-      JSON.parse(
-        localStorage.getItem(
-          "bookmarks"
-        )
-      ) || [];
-
-
-    /* =====================================================
-       NEWS NAVIGATOR
-    ====================================================== */
-
-    const newsNavigator =
-      initNewsNavigation({
-        newsNavigation,
-        newsSection,
-        pageSize:
-          PAGE_SIZE,
-        getCurrentIndex:
-          () => currentIndex
-      });
-
-
-    /* =====================================================
-       APRI MODALE CANCELLA SEGNALIBRI
-    ====================================================== */
-
-    function openBookmarkClearModal() {
-
-      if (
-        !bookmarkClearModal ||
-        bookmarks.length === 0
-      ) {
-        return;
-      }
-
-
-      bookmarkClearModal.hidden =
-        false;
-
-
-      document.body.style.overflow =
-        "hidden";
-
-
-      bookmarkClearCancel?.focus();
+  function closeBookmarkClearModal() {
+    if (!bookmarkClearModal) {
+      return;
     }
 
+    bookmarkClearModal.hidden = true;
 
-    /* =====================================================
-       CHIUDI MODALE
-    ====================================================== */
+    document.body.style.overflow = "";
 
-    function closeBookmarkClearModal() {
+    bookmarkClearButton?.focus();
+  }
 
-      if (!bookmarkClearModal) {
-        return;
-      }
+  /* CANCELLA TUTTI I SEGNALIBRI */
 
+  function clearAllBookmarks() {
+    bookmarks = [];
 
-      bookmarkClearModal.hidden =
-        true;
+    visibleBookmarks = BOOKMARK_PAGE_SIZE;
 
+    localStorage.removeItem("bookmarks");
 
-      document.body.style.overflow =
-        "";
-
-
-      bookmarkClearButton?.focus();
+    if (bookmarkClearModal) {
+      bookmarkClearModal.hidden = true;
     }
 
+    document.body.style.overflow = "";
 
-    /* =====================================================
-       CANCELLA TUTTI I SEGNALIBRI
-    ====================================================== */
+    renderBookmarks();
 
-    function clearAllBookmarks() {
+    updateBookmarkIcons();
+  }
 
-      bookmarks =
-        [];
+  /* CONTATORE NEWS */
 
-
-      visibleBookmarks =
-        BOOKMARK_PAGE_SIZE;
-
-
-      localStorage.removeItem(
-        "bookmarks"
-      );
-
-
-      if (bookmarkClearModal) {
-
-        bookmarkClearModal.hidden =
-          true;
-      }
-
-
-      document.body.style.overflow =
-        "";
-
-
-      renderBookmarks();
-
-      updateBookmarkIcons();
+  function updateCounter() {
+    if (!counter) {
+      return;
     }
 
+    const shown = Math.min(currentIndex, newsIds.length);
 
-    /* =====================================================
-       CONTATORE NEWS
-    ====================================================== */
+    counter.textContent = `Mostrate ${shown} di ${newsIds.length} news`;
+  }
 
-    function updateCounter() {
+  /* CONTROLLI SEGNALIBRI */
 
-      if (!counter) {
-        return;
-      }
-
-
-      const shown =
-        Math.min(
-          currentIndex,
-          newsIds.length
-        );
-
-
-      counter.textContent =
-        `Mostrate ${shown} di ${newsIds.length} news`;
+  function updateBookmarkControls() {
+    if (!bookmarkLoadMoreButton || !bookmarkCounter || !bookmarkMoreContainer) {
+      return;
     }
 
+    /* NESSUN SEGNALIBRO */
 
-    /* =====================================================
-       CONTROLLI SEGNALIBRI
-    ====================================================== */
+    if (bookmarks.length === 0) {
+      bookmarkMoreContainer.hidden = true;
 
-    function updateBookmarkControls() {
+      bookmarkLoadMoreButton.hidden = true;
 
-      if (
-        !bookmarkLoadMoreButton ||
-        !bookmarkCounter ||
-        !bookmarkMoreContainer
-      ) {
-        return;
-      }
+      bookmarkCounter.hidden = true;
 
+      visibleBookmarks = BOOKMARK_PAGE_SIZE;
 
-      /* ===================================================
-         NESSUN SEGNALIBRO
-      ==================================================== */
-
-      if (
-        bookmarks.length === 0
-      ) {
-
-        bookmarkMoreContainer.hidden =
-          true;
-
-        bookmarkLoadMoreButton.hidden =
-          true;
-
-        bookmarkCounter.hidden =
-          true;
-
-        visibleBookmarks =
-          BOOKMARK_PAGE_SIZE;
-
-        return;
-      }
-
-
-      /* ===================================================
-         SEGNALIBRI PRESENTI
-      ==================================================== */
-
-      bookmarkMoreContainer.hidden =
-        false;
-
-
-      const shown =
-        Math.min(
-          visibleBookmarks,
-          bookmarks.length
-        );
-
-
-      bookmarkCounter.hidden =
-        false;
-
-
-      bookmarkCounter.textContent =
-        `Mostrati ${shown} di ${bookmarks.length} segnalibri`;
-
-
-      /* ===================================================
-         MOSTRA ALTRI
-      ==================================================== */
-
-      if (
-        shown <
-        bookmarks.length
-      ) {
-
-        bookmarkLoadMoreButton.hidden =
-          false;
-
-
-        bookmarkLoadMoreButton.textContent =
-          "Mostra altri segnalibri";
-
-      } else {
-
-        bookmarkLoadMoreButton.hidden =
-          true;
-      }
+      return;
     }
 
+    /* SEGNALIBRI PRESENTI */
 
-    /* =====================================================
-       TOGGLE BOOKMARK
-    ====================================================== */
+    bookmarkMoreContainer.hidden = false;
 
-    function toggleBookmark(
-      news
-    ) {
+    const shown = Math.min(visibleBookmarks, bookmarks.length);
 
-      bookmarks =
-        toggleBookmarkData(
-          bookmarks,
-          news
-        );
+    bookmarkCounter.hidden = false;
 
+    bookmarkCounter.textContent = `Mostrati ${shown} di ${bookmarks.length} segnalibri`;
 
-      localStorage.setItem(
-        "bookmarks",
-        JSON.stringify(
-          bookmarks
-        )
-      );
+    /* MOSTRA ALTRI */
 
+    if (shown < bookmarks.length) {
+      bookmarkLoadMoreButton.hidden = false;
 
-      renderBookmarks();
-
-      updateBookmarkIcons();
+      bookmarkLoadMoreButton.textContent = "Mostra altri segnalibri";
+    } else {
+      bookmarkLoadMoreButton.hidden = true;
     }
+  }
 
+  /* TOGGLE BOOKMARK */
 
-    /* =====================================================
-       AGGIORNA ICONE BOOKMARK
-    ====================================================== */
+  function toggleBookmark(news) {
+    bookmarks = toggleBookmarkData(bookmarks, news);
 
-    function updateBookmarkIcons() {
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
 
-      document
-        .querySelectorAll(
-          ".bookmark-btn"
-        )
-        .forEach(
-          button => {
+    renderBookmarks();
 
-            const id =
-              Number(
-                button.dataset.id
-              );
+    updateBookmarkIcons();
+  }
 
+  /* AGGIORNA ICONE BOOKMARK */
 
-            button.classList.toggle(
-              "saved",
-              isBookmarked(
-                bookmarks,
-                id
-              )
-            );
-          }
-        );
-    }
+  function updateBookmarkIcons() {
+    document.querySelectorAll(".bookmark-btn").forEach((button) => {
+      const id = Number(button.dataset.id);
 
+      button.classList.toggle("saved", isBookmarked(bookmarks, id));
+    });
+  }
 
-    /* =====================================================
-       CREA PULSANTE BOOKMARK
-    ====================================================== */
+  /* CREA PULSANTE BOOKMARK */
 
-    function createBookmarkButton(
-      news
-    ) {
+  function createBookmarkButton(news) {
+    const button = document.createElement("button");
 
-      const button =
-        document.createElement(
-          "button"
-        );
+    button.type = "button";
 
+    button.className = "bookmark-btn";
 
-      button.type =
-        "button";
+    button.dataset.id = news.id;
 
+    button.setAttribute("aria-label", "Salva nei segnalibri");
 
-      button.className =
-        "bookmark-btn";
-
-
-      button.dataset.id =
-        news.id;
-
-
-      button.setAttribute(
-        "aria-label",
-        "Salva nei segnalibri"
-      );
-
-
-      button.innerHTML = `
+    button.innerHTML = `
         <svg
           viewBox="0 0 24 24"
           class="bookmark-icon"
@@ -610,855 +325,367 @@ document.addEventListener(
         </svg>
       `;
 
+    button.classList.toggle("saved", isBookmarked(bookmarks, news.id));
 
-      button.classList.toggle(
-        "saved",
-        isBookmarked(
-          bookmarks,
-          news.id
-        )
-      );
+    button.addEventListener("click", () => {
+      toggleBookmark(news);
+    });
 
+    return button;
+  }
 
-      button.addEventListener(
-        "click",
-        () => {
+  /* RENDER NEWS */
 
-          toggleBookmark(
-            news
-          );
-        }
-      );
+  function renderNews(news) {
+    const card = document.createElement("article");
 
+    card.className = "news-card";
 
-      return button;
+    /* IMAGE */
+
+    const img = document.createElement("img");
+
+    setRelevantNewsImage(img, news);
+
+    /* BODY */
+
+    const body = document.createElement("div");
+
+    body.className = "news-body";
+
+    /* TITLE */
+
+    const title = document.createElement("h3");
+
+    title.textContent = news.title;
+
+    /* DATE */
+
+    const date = document.createElement("p");
+
+    date.className = "news-date";
+
+    date.textContent = "🕒 " + formatDate(news.time);
+
+    /* LINK */
+
+    const link = document.createElement("a");
+
+    link.href = news.url || `https://news.ycombinator.com/item?id=${news.id}`;
+
+    link.target = "_blank";
+
+    link.rel = "noopener noreferrer";
+
+    link.className = "btn-glass";
+
+    link.textContent = "Leggi news";
+
+    /* BOOKMARK */
+
+    const bookmarkBtn = createBookmarkButton(news);
+
+    /* ACTIONS */
+
+    const actions = document.createElement("div");
+
+    actions.className = "news-actions";
+
+    actions.appendChild(link);
+
+    actions.appendChild(bookmarkBtn);
+
+    /* BUILD CARD */
+
+    body.appendChild(title);
+
+    body.appendChild(date);
+
+    body.appendChild(actions);
+
+    card.appendChild(img);
+
+    card.appendChild(body);
+
+    newsList.appendChild(card);
+
+    return card;
+  }
+
+  /* RENDER BOOKMARKS */
+
+  function renderBookmarks() {
+    if (!bookmarkList) {
+      return;
     }
 
+    bookmarkList.replaceChildren();
 
-    /* =====================================================
-       RENDER NEWS
-    ====================================================== */
+    /* NESSUN SEGNALIBRO */
 
-    function renderNews(
-      news
-    ) {
+    if (bookmarks.length === 0) {
+      const emptyCard = document.createElement("article");
 
-      const card =
-        document.createElement(
-          "article"
-        );
+      emptyCard.className = "news-card empty-bookmark";
 
+      const body = document.createElement("div");
 
-      card.className =
-        "news-card";
+      body.className = "news-body empty-body";
 
+      const icon = document.createElement("div");
 
-      /* ===================================================
-         IMAGE
-      ==================================================== */
+      icon.className = "empty-icon";
 
-      const img =
-        document.createElement(
-          "img"
-        );
+      icon.textContent = "🔖";
 
+      const text = document.createElement("p");
 
-      setRelevantNewsImage(
-        img,
-        news
-      );
+      text.textContent = "Non hai ancora salvato nessuna news.";
 
+      body.appendChild(icon);
 
-      /* ===================================================
-         BODY
-      ==================================================== */
+      body.appendChild(text);
 
-      const body =
-        document.createElement(
-          "div"
-        );
+      emptyCard.appendChild(body);
 
-
-      body.className =
-        "news-body";
-
-
-      /* ===================================================
-         TITLE
-      ==================================================== */
-
-      const title =
-        document.createElement(
-          "h3"
-        );
-
-
-      title.textContent =
-        news.title;
-
-
-      /* ===================================================
-         DATE
-      ==================================================== */
-
-      const date =
-        document.createElement(
-          "p"
-        );
-
-
-      date.className =
-        "news-date";
-
-
-      date.textContent =
-        "🕒 " +
-        formatDate(
-          news.time
-        );
-
-
-      /* ===================================================
-         LINK
-      ==================================================== */
-
-      const link =
-        document.createElement(
-          "a"
-        );
-
-
-      link.href =
-        news.url ||
-        `https://news.ycombinator.com/item?id=${news.id}`;
-
-
-      link.target =
-        "_blank";
-
-
-      link.rel =
-        "noopener noreferrer";
-
-
-      link.className =
-        "btn-glass";
-
-
-      link.textContent =
-        "Leggi news";
-
-
-      /* ===================================================
-         BOOKMARK
-      ==================================================== */
-
-      const bookmarkBtn =
-        createBookmarkButton(
-          news
-        );
-
-
-      /* ===================================================
-         ACTIONS
-      ==================================================== */
-
-      const actions =
-        document.createElement(
-          "div"
-        );
-
-
-      actions.className =
-        "news-actions";
-
-
-      actions.appendChild(
-        link
-      );
-
-
-      actions.appendChild(
-        bookmarkBtn
-      );
-
-
-      /* ===================================================
-         BUILD CARD
-      ==================================================== */
-
-      body.appendChild(
-        title
-      );
-
-
-      body.appendChild(
-        date
-      );
-
-
-      body.appendChild(
-        actions
-      );
-
-
-      card.appendChild(
-        img
-      );
-
-
-      card.appendChild(
-        body
-      );
-
-
-      newsList.appendChild(
-        card
-      );
-
-
-      return card;
-    }
-
-
-    /* =====================================================
-       RENDER BOOKMARKS
-    ====================================================== */
-
-    function renderBookmarks() {
-
-      if (!bookmarkList) {
-        return;
-      }
-
-
-      bookmarkList.replaceChildren();
-
-
-      /* ===================================================
-         NESSUN SEGNALIBRO
-      ==================================================== */
-
-      if (
-        bookmarks.length === 0
-      ) {
-
-        const emptyCard =
-          document.createElement(
-            "article"
-          );
-
-
-        emptyCard.className =
-          "news-card empty-bookmark";
-
-
-        const body =
-          document.createElement(
-            "div"
-          );
-
-
-        body.className =
-          "news-body empty-body";
-
-
-        const icon =
-          document.createElement(
-            "div"
-          );
-
-
-        icon.className =
-          "empty-icon";
-
-
-        icon.textContent =
-          "🔖";
-
-
-        const text =
-          document.createElement(
-            "p"
-          );
-
-
-        text.textContent =
-          "Non hai ancora salvato nessuna news.";
-
-
-        body.appendChild(
-          icon
-        );
-
-
-        body.appendChild(
-          text
-        );
-
-
-        emptyCard.appendChild(
-          body
-        );
-
-
-        bookmarkList.appendChild(
-          emptyCard
-        );
-
-
-        updateBookmarkControls();
-
-        return;
-      }
-
-
-      /* ===================================================
-         SEGNALIBRI VISIBILI
-      ==================================================== */
-
-      const visibleItems =
-        bookmarks.slice(
-          0,
-          visibleBookmarks
-        );
-
-
-      visibleItems.forEach(
-        news => {
-
-          const card =
-            document.createElement(
-              "article"
-            );
-
-
-          card.className =
-            "news-card bookmark-card";
-
-
-          /* ===============================================
-             IMAGE
-          ================================================ */
-
-          const img =
-            document.createElement(
-              "img"
-            );
-
-
-          setRelevantNewsImage(
-            img,
-            news
-          );
-
-
-          /* ===============================================
-             BODY
-          ================================================ */
-
-          const body =
-            document.createElement(
-              "div"
-            );
-
-
-          body.className =
-            "news-body";
-
-
-          /* ===============================================
-             TITLE
-          ================================================ */
-
-          const title =
-            document.createElement(
-              "h3"
-            );
-
-
-          title.textContent =
-            news.title;
-
-
-          /* ===============================================
-             DATE
-          ================================================ */
-
-          const date =
-            document.createElement(
-              "p"
-            );
-
-
-          date.className =
-            "news-date";
-
-
-          date.textContent =
-            "🕒 " +
-            formatDate(
-              news.time
-            );
-
-
-          /* ===============================================
-             LINK
-          ================================================ */
-
-          const link =
-            document.createElement(
-              "a"
-            );
-
-
-          link.href =
-            news.url ||
-            `https://news.ycombinator.com/item?id=${news.id}`;
-
-
-          link.target =
-            "_blank";
-
-
-          link.rel =
-            "noopener noreferrer";
-
-
-          link.className =
-            "btn-glass";
-
-
-          link.textContent =
-            "Leggi news";
-
-
-          /* ===============================================
-             REMOVE BOOKMARK
-          ================================================ */
-
-          const removeBtn =
-            document.createElement(
-              "button"
-            );
-
-
-          removeBtn.type =
-            "button";
-
-
-          removeBtn.className =
-            "bookmark-remove";
-
-
-          removeBtn.textContent =
-            "✕";
-
-
-          removeBtn.setAttribute(
-            "aria-label",
-            "Rimuovi dai segnalibri"
-          );
-
-
-          removeBtn.addEventListener(
-            "click",
-            () => {
-
-              bookmarks =
-                bookmarks.filter(
-                  bookmark =>
-                    bookmark.id !==
-                    news.id
-                );
-
-
-              localStorage.setItem(
-                "bookmarks",
-                JSON.stringify(
-                  bookmarks
-                )
-              );
-
-
-              renderBookmarks();
-
-              updateBookmarkIcons();
-            }
-          );
-
-
-          /* ===============================================
-             BUILD CARD
-          ================================================ */
-
-          card.appendChild(
-            removeBtn
-          );
-
-
-          body.appendChild(
-            title
-          );
-
-
-          body.appendChild(
-            date
-          );
-
-
-          body.appendChild(
-            link
-          );
-
-
-          card.appendChild(
-            img
-          );
-
-
-          card.appendChild(
-            body
-          );
-
-
-          bookmarkList.appendChild(
-            card
-          );
-        }
-      );
-
+      bookmarkList.appendChild(emptyCard);
 
       updateBookmarkControls();
+
+      return;
     }
 
+    /* SEGNALIBRI VISIBILI */
 
-    /* =====================================================
-       LOAD MORE NEWS
-    ====================================================== */
+    const visibleItems = bookmarks.slice(0, visibleBookmarks);
 
-    async function loadMoreNews(
-      shouldScroll = false
-    ) {
+    visibleItems.forEach((news) => {
+      const card = document.createElement("article");
 
-      if (isLoading) {
-        return;
-      }
+      card.className = "news-card bookmark-card";
 
+      /* IMAGE */
 
-      isLoading =
-        true;
+      const img = document.createElement("img");
 
+      setRelevantNewsImage(img, news);
 
-      loadMoreButton.textContent =
-        "Caricamento…";
+      /* BODY */
 
+      const body = document.createElement("div");
 
-      loadMoreButton.disabled =
-        true;
+      body.className = "news-body";
 
+      /* TITLE */
 
-      /* ===================================================
-         PROSSIMI 10 ID
-      ==================================================== */
+      const title = document.createElement("h3");
 
-      const nextIds =
-        newsIds.slice(
-          currentIndex,
-          currentIndex +
-          PAGE_SIZE
-        );
+      title.textContent = news.title;
 
+      /* DATE */
 
-      /* ===================================================
-         NUMERO BLOCCO
-      ==================================================== */
+      const date = document.createElement("p");
 
-      const pageNumber =
-        Math.floor(
-          currentIndex /
-          PAGE_SIZE
-        ) + 1;
+      date.className = "news-date";
 
+      date.textContent = "🕒 " + formatDate(news.time);
 
-      try {
+      /* LINK */
 
-        const newsArray =
-          await Promise.all(
+      const link = document.createElement("a");
 
-            nextIds.map(
-              id =>
-                getNewsById(
-                  id
-                ).catch(
-                  () => null
-                )
-            )
-          );
+      link.href = news.url || `https://news.ycombinator.com/item?id=${news.id}`;
 
+      link.target = "_blank";
 
-        let firstNewCard =
-          null;
+      link.rel = "noopener noreferrer";
 
+      link.className = "btn-glass";
 
-        /* =================================================
-           CREA CARD
-        ================================================== */
+      link.textContent = "Leggi news";
 
-        newsArray.forEach(
-          news => {
+      /* REMOVE BOOKMARK */
 
-            if (
-              news &&
-              news.title &&
-              news.time
-            ) {
+      const removeBtn = document.createElement("button");
 
-              const card =
-                renderNews(
-                  news
-                );
+      removeBtn.type = "button";
 
+      removeBtn.className = "bookmark-remove";
 
-              if (
-                !firstNewCard
-              ) {
+      removeBtn.textContent = "✕";
 
-                firstNewCard =
-                  card;
-              }
-            }
-          }
-        );
+      removeBtn.setAttribute("aria-label", "Rimuovi dai segnalibri");
 
+      removeBtn.addEventListener("click", () => {
+        bookmarks = bookmarks.filter((bookmark) => bookmark.id !== news.id);
 
-        /* =================================================
-           ANCORA DEL BLOCCO
-        ================================================== */
-
-        if (
-          firstNewCard
-        ) {
-
-          firstNewCard.id =
-            `news-page-${pageNumber}`;
-
-
-          firstNewCard.classList.add(
-            "news-page-start"
-          );
-        }
-
-
-        /* =================================================
-           AGGIORNA INDICE
-        ================================================== */
-
-        currentIndex +=
-          nextIds.length;
-
-
-        /* =================================================
-           AGGIORNA UI
-        ================================================== */
-
-        updateCounter();
-
-        updateBookmarkIcons();
-
-
-        newsNavigator.setActivePage(
-          pageNumber
-        );
-
-
-        /* =================================================
-           SCROLL ALLE NUOVE 10 CARD
-        ================================================== */
-
-        if (
-          shouldScroll &&
-          firstNewCard
-        ) {
-
-          firstNewCard.scrollIntoView({
-            behavior:
-              "smooth",
-            block:
-              "start"
-          });
-        }
-
-
-        /* =================================================
-           FINE NEWS
-        ================================================== */
-
-        if (
-          currentIndex >=
-          newsIds.length
-        ) {
-
-          loadMoreButton.textContent =
-            "Nessun’altra news";
-
-
-          loadMoreButton.disabled =
-            true;
-
-        } else {
-
-          loadMoreButton.textContent =
-            "Carica altre news";
-
-
-          loadMoreButton.disabled =
-            false;
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Errore caricamento news:",
-          error
-        );
-
-
-        loadMoreButton.textContent =
-          "Riprova";
-
-
-        loadMoreButton.disabled =
-          false;
-
-      } finally {
-
-        isLoading =
-          false;
-      }
-    }
-
-
-    /* =====================================================
-       INIT
-    ====================================================== */
-
-    async function init() {
-
-      try {
-
-        newsIds =
-          await getLatestIds();
-
-
-        await loadMoreNews();
-
+        localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
 
         renderBookmarks();
 
-      } catch (error) {
+        updateBookmarkIcons();
+      });
 
-        console.error(
-          "Errore caricamento Hacker News:",
-          error
-        );
-      }
-    }
+      /* BUILD CARD */
 
+      card.appendChild(removeBtn);
 
-    /* =====================================================
-       CARICA ALTRE NEWS
-    ====================================================== */
+      body.appendChild(title);
 
-    loadMoreButton.addEventListener(
-      "click",
-      event => {
+      body.appendChild(date);
 
-        event.preventDefault();
+      body.appendChild(link);
 
+      card.appendChild(img);
 
-        loadMoreNews(
-          true
-        );
-      }
-    );
+      card.appendChild(body);
 
+      bookmarkList.appendChild(card);
+    });
 
-    /* =====================================================
-       MOSTRA ALTRI BOOKMARK
-    ====================================================== */
-
-    if (
-      bookmarkLoadMoreButton
-    ) {
-
-      bookmarkLoadMoreButton.addEventListener(
-        "click",
-        () => {
-
-          visibleBookmarks +=
-            BOOKMARK_PAGE_SIZE;
-
-
-          renderBookmarks();
-        }
-      );
-    }
-
-
-    /* =====================================================
-       CLEAR BOOKMARK EVENTS
-    ====================================================== */
-
-    bookmarkClearButton?.addEventListener(
-      "click",
-      openBookmarkClearModal
-    );
-
-
-    bookmarkClearCancel?.addEventListener(
-      "click",
-      closeBookmarkClearModal
-    );
-
-
-    bookmarkClearOverlay?.addEventListener(
-      "click",
-      closeBookmarkClearModal
-    );
-
-
-    bookmarkClearConfirm?.addEventListener(
-      "click",
-      clearAllBookmarks
-    );
-
-
-    /* =====================================================
-       ESC CHIUDE LA MODALE
-    ====================================================== */
-
-    document.addEventListener(
-      "keydown",
-      event => {
-
-        if (
-          event.key ===
-            "Escape" &&
-          bookmarkClearModal &&
-          !bookmarkClearModal.hidden
-        ) {
-
-          closeBookmarkClearModal();
-        }
-      }
-    );
-
-
-    /* =====================================================
-       START
-    ====================================================== */
-
-    init();
+    updateBookmarkControls();
   }
-);
+
+  /* LOAD MORE NEWS */
+
+  async function loadMoreNews(shouldScroll = false) {
+    if (isLoading) {
+      return;
+    }
+
+    isLoading = true;
+
+    loadMoreButton.textContent = "Caricamento…";
+
+    loadMoreButton.disabled = true;
+
+    /* PROSSIMI 10 ID */
+
+    const nextIds = newsIds.slice(currentIndex, currentIndex + PAGE_SIZE);
+
+    /* NUMERO BLOCCO */
+
+    const pageNumber = Math.floor(currentIndex / PAGE_SIZE) + 1;
+
+    try {
+      const newsArray = await Promise.all(nextIds.map((id) => getNewsById(id).catch(() => null)));
+
+      let firstNewCard = null;
+
+      /* CREA CARD */
+
+      newsArray.forEach((news) => {
+        if (news && news.title && news.time) {
+          const card = renderNews(news);
+
+          if (!firstNewCard) {
+            firstNewCard = card;
+          }
+        }
+      });
+
+      /* ANCORA DEL BLOCCO */
+
+      if (firstNewCard) {
+        firstNewCard.id = `news-page-${pageNumber}`;
+
+        firstNewCard.classList.add("news-page-start");
+      }
+
+      /* AGGIORNA INDICE */
+
+      currentIndex += nextIds.length;
+
+      /* AGGIORNA UI */
+
+      updateCounter();
+
+      updateBookmarkIcons();
+
+      newsNavigator.setActivePage(pageNumber);
+
+      /* SCROLL ALLE NUOVE 10 CARD */
+
+      if (shouldScroll && firstNewCard) {
+        firstNewCard.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      /* FINE NEWS */
+
+      if (currentIndex >= newsIds.length) {
+        loadMoreButton.textContent = "Nessun’altra news";
+
+        loadMoreButton.disabled = true;
+      } else {
+        loadMoreButton.textContent = "Carica altre news";
+
+        loadMoreButton.disabled = false;
+      }
+    } catch (error) {
+      console.error("Errore caricamento news:", error);
+
+      loadMoreButton.textContent = "Riprova";
+
+      loadMoreButton.disabled = false;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  /* INIT */
+
+  async function init() {
+    try {
+      newsIds = await getLatestIds();
+
+      await loadMoreNews();
+
+      renderBookmarks();
+    } catch (error) {
+      console.error("Errore caricamento Hacker News:", error);
+    }
+  }
+
+  /* CARICA ALTRE NEWS */
+
+  loadMoreButton.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    loadMoreNews(true);
+  });
+
+  /* MOSTRA ALTRI BOOKMARK */
+
+  if (bookmarkLoadMoreButton) {
+    bookmarkLoadMoreButton.addEventListener("click", () => {
+      visibleBookmarks += BOOKMARK_PAGE_SIZE;
+
+      renderBookmarks();
+    });
+  }
+
+  /* CLEAR BOOKMARK EVENTS */
+
+  bookmarkClearButton?.addEventListener("click", openBookmarkClearModal);
+
+  bookmarkClearCancel?.addEventListener("click", closeBookmarkClearModal);
+
+  bookmarkClearOverlay?.addEventListener("click", closeBookmarkClearModal);
+
+  bookmarkClearConfirm?.addEventListener("click", clearAllBookmarks);
+
+  /* ESC CHIUDE LA MODALE */
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && bookmarkClearModal && !bookmarkClearModal.hidden) {
+      closeBookmarkClearModal();
+    }
+  });
+
+  /* START */
+
+  init();
+});

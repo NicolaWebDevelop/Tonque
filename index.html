@@ -1,452 +1,181 @@
-<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="it">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+    <title>Tongue</title>
 
-  <title>Tongue</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
-    rel="stylesheet"
-  >
+    <link rel="icon" href="/src/img/tonquefavi.png" type="image/png" />
+  </head>
 
-  <link
-    rel="icon"
-    href="/src/img/tonquefavi.png"
-    type="image/png"
-  >
-</head>
+  <body>
+    <!-- BACK TO TOP -->
 
+    <button id="backToTop" type="button" aria-label="Torna in cima">↑</button>
 
-<body>
+    <div id="top"></div>
 
-  <!-- =======================================================
-       BACK TO TOP
-  ======================================================== -->
+    <!-- HERO -->
 
-  <button
-    id="backToTop"
-    type="button"
-    aria-label="Torna in cima"
-  >
-    ↑
-  </button>
+    <section id="home" class="hero">
+      <div class="wrapper hero-content">
+        <h1>Benvenuto su Tongue</h1>
 
-  <div id="top"></div>
-
-
-  <!-- =======================================================
-       HERO
-  ======================================================== -->
-
-  <section
-    id="home"
-    class="hero"
-  >
-
-    <div class="wrapper hero-content">
-
-      <h1>
-        Benvenuto su Tongue
-      </h1>
-
-      <p>
-        Il giornalismo come non l’avete mai visto prima.
-      </p>
-
-    </div>
-
-    <a
-      href="#notizie"
-      class="btn-primary btn-glass"
-    >
-      Leggi le ultime news
-    </a>
-
-  </section>
-
-
-  <!-- =======================================================
-       NOTIZIE
-  ======================================================== -->
-
-
-<section
-  id="notizie"
-  class="hero-notizie"
->
-
-  <div class="wrapper hero-content">
-
-    <h1>
-      NOTIZIE
-    </h1>
-
-    <p class="spazio-notizie">
-      Tutte le notizie pubblicate da Tongue in un unico posto.
-    </p>
-
-
-    <div class="container my-4">
-
-      <!-- NEWS -->
-
-      <div id="news-container">
-
-        <div class="news-list"></div>
-
-
-        <!-- NAVIGAZIONE NEWS VERTICALE + SEGNALIBRI -->
-
-        <div
-          id="news-floating-controls"
-          class="news-floating-controls"
-        >
-
-          <nav
-            id="news-navigation"
-            class="news-navigation"
-            aria-label="Navigazione tra i blocchi di notizie"
-            hidden
-          ></nav>
-
-
-          <a
-            id="bookmark-shortcut"
-            class="bookmark-shortcut"
-            href="#segnalibri"
-            aria-label="Vai ai segnalibri salvati"
-            title="Vai ai segnalibri"
-          >
-
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z"
-                fill="currentColor"
-              />
-            </svg>
-
-          </a>
-
-        </div>
-
+        <p>Il giornalismo come non l’avete mai visto prima.</p>
       </div>
 
+      <a href="#notizie" class="btn-primary btn-glass"> Leggi le ultime news </a>
+    </section>
 
-      <!-- LOAD MORE -->
+    <!-- NOTIZIE -->
 
-      <div class="load-more-container">
+    <section id="notizie" class="hero-notizie">
+      <div class="wrapper hero-content">
+        <h1>NOTIZIE</h1>
 
-        <button
-          id="load-more"
-          class="btn-glass"
-          type="button"
-        >
-          Carica altre news
-        </button>
+        <p class="spazio-notizie">Tutte le notizie pubblicate da Tongue in un unico posto.</p>
 
+        <div class="container my-4">
+          <!-- NEWS -->
 
-        <p
-          id="news-counter"
-          class="news-counter"
-        >
-          Mostrate 0 di 0 news
-        </p>
+          <div id="news-container">
+            <div class="news-list"></div>
 
-      </div>
+            <!-- NAVIGAZIONE NEWS VERTICALE + SEGNALIBRI -->
 
-    </div>
+            <div id="news-floating-controls" class="news-floating-controls">
+              <nav id="news-navigation" class="news-navigation" aria-label="Navigazione tra i blocchi di notizie" hidden></nav>
 
-  </div>
-
-</section>
-
-
-  <!-- =======================================================
-       SEGNALIBRI
-  ======================================================== -->
-
-  <section
-    id="segnalibri"
-    class="hero-segnalibri"
-  >
-
-    <div class="wrapper hero-content">
-
-      <h2 class="bookmark-title">
-
-        <svg
-          viewBox="0 0 24 24"
-          class="bookmark-title-icon"
-          width="30"
-          height="30"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z"
-          />
-        </svg>
-
-        Segnalibri
-
-      </h2>
-
-
-      <p>
-        Le news che hai salvato.
-      </p>
-
-
-      <div class="container my-4">
-
-        <div class="bookmark-list"></div>
-
-
-        <!-- CONTROLLI SEGNALIBRI -->
-
-        <div
-          class="bookmark-more-container"
-          id="bookmark-more-container"
-          hidden
-        >
-
-          <div class="bookmark-actions">
-
-
-            <button
-              id="bookmark-load-more"
-              class="btn-glass"
-              type="button"
-              hidden
-            >
-              Mostra altri segnalibri
-            </button>
-
-
-            <button
-              id="bookmark-clear-all"
-              class="bookmark-clear-all"
-              type="button"
-              aria-label="Elimina tutti i segnalibri"
-              title="Elimina tutti i segnalibri"
-            >
-
-              <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-
-            </button>
-
+              <a id="bookmark-shortcut" class="bookmark-shortcut" href="#segnalibri" aria-label="Vai ai segnalibri salvati" title="Vai ai segnalibri">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z" fill="currentColor" />
+                </svg>
+              </a>
+            </div>
           </div>
 
+          <!-- LOAD MORE -->
 
-          <p
-            id="bookmark-counter"
-            class="bookmark-counter"
-            hidden
-          >
-            Mostrati 0 di 0 segnalibri
+          <div class="load-more-container">
+            <button id="load-more" class="btn-glass" type="button">Carica altre news</button>
+
+            <p id="news-counter" class="news-counter">Mostrate 0 di 0 news</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEGNALIBRI -->
+
+    <section id="segnalibri" class="hero-segnalibri">
+      <div class="wrapper hero-content">
+        <h2 class="bookmark-title">
+          <svg viewBox="0 0 24 24" class="bookmark-title-icon" width="30" height="30" fill="currentColor" aria-hidden="true">
+            <path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z" />
+          </svg>
+
+          Segnalibri
+        </h2>
+
+        <p>Le news che hai salvato.</p>
+
+        <div class="container my-4">
+          <div class="bookmark-list"></div>
+
+          <!-- CONTROLLI SEGNALIBRI -->
+
+          <div class="bookmark-more-container" id="bookmark-more-container" hidden>
+            <div class="bookmark-actions">
+              <button id="bookmark-load-more" class="btn-glass" type="button" hidden>Mostra altri segnalibri</button>
+
+              <button
+                id="bookmark-clear-all"
+                class="bookmark-clear-all"
+                type="button"
+                aria-label="Elimina tutti i segnalibri"
+                title="Elimina tutti i segnalibri"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <p id="bookmark-counter" class="bookmark-counter" hidden>Mostrati 0 di 0 segnalibri</p>
+          </div>
+
+          <!-- MODALE ELIMINA TUTTI -->
+
+          <div id="bookmark-clear-modal" class="bookmark-clear-modal" role="dialog" aria-modal="true" aria-labelledby="bookmark-clear-title" hidden>
+            <div class="bookmark-clear-overlay"></div>
+
+            <div class="bookmark-clear-dialog">
+              <div class="bookmark-clear-icon">🗑️</div>
+
+              <h3 id="bookmark-clear-title">Eliminare tutti i segnalibri?</h3>
+
+              <p>Questa operazione eliminerà tutte le news salvate.</p>
+
+              <div class="bookmark-clear-buttons">
+                <button id="bookmark-clear-cancel" class="btn-glass" type="button">Annulla</button>
+
+                <button id="bookmark-clear-confirm" class="bookmark-confirm-delete" type="button">Elimina tutti</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer class="footer-glass">
+      <div class="footer-inner">
+        <div class="footer-center">
+          <img src="/src/img/tonquelogo.png" alt="Tongue Logo" class="footer-logo" width="40" height="40" />
+
+          <p class="footer-claim">Il giornalismo come non l’avete mai visto prima.</p>
+
+          <div class="footer-legal">
+            <span class="footer-copy"> © 2026 Tongue. </span>
+
+            <button id="open-legal" class="footer-link" type="button">Tutti i diritti riservati.</button>
+          </div>
+          <p class="pexels-credit">
+            Immagini fornite da
+            <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer"> Pexels. </a>
           </p>
-
         </div>
-
-
-        <!-- =================================================
-             MODALE ELIMINA TUTTI
-        ================================================== -->
-
-        <div
-          id="bookmark-clear-modal"
-          class="bookmark-clear-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="bookmark-clear-title"
-          hidden
-        >
-
-          <div class="bookmark-clear-overlay"></div>
-
-
-          <div class="bookmark-clear-dialog">
-
-            <div class="bookmark-clear-icon">
-              🗑️
-            </div>
-
-
-            <h3 id="bookmark-clear-title">
-              Eliminare tutti i segnalibri?
-            </h3>
-
-
-            <p>
-              Questa operazione eliminerà tutte le news salvate.
-            </p>
-
-
-            <div class="bookmark-clear-buttons">
-
-              <button
-                id="bookmark-clear-cancel"
-                class="btn-glass"
-                type="button"
-              >
-                Annulla
-              </button>
-
-
-              <button
-                id="bookmark-clear-confirm"
-                class="bookmark-confirm-delete"
-                type="button"
-              >
-                Elimina tutti
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
       </div>
+    </footer>
 
-    </div>
+    <!-- MODALE COPYRIGHT -->
 
-  </section>
+    <div id="legal-modal" class="legal-modal">
+      <div class="legal-content">
+        <button class="legal-close" id="close-legal" type="button" aria-label="Chiudi">✕</button>
 
+        <img src="/src/img/tonquelogo.png" alt="Tongue Logo" class="legal-logo" width="80" height="80" />
 
-  <!-- =======================================================
-       FOOTER
-  ======================================================== -->
+        <h3>Diritti e Copyright.</h3>
 
-  <footer class="footer-glass">
-
-    <div class="footer-inner">
-
-      <div class="footer-center">
-
-        <img
-          src="/src/img/tonquelogo.png"
-          alt="Tongue Logo"
-          class="footer-logo"
-          width="40"
-          height="40"
-        >
-
-
-        <p class="footer-claim">
-          Il giornalismo come non l’avete mai visto prima.
-        </p>
-
-
-        <div class="footer-legal">
-
-          <span class="footer-copy">
-            © 2026 Tongue.
-          </span>
-
-
-          <button
-            id="open-legal"
-            class="footer-link"
-            type="button"
-          >
-            Tutti i diritti riservati.
-          </button>
-
-        </div>
-<p class="pexels-credit">
-  Immagini fornite da
-  <a
-    href="https://www.pexels.com"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Pexels.
-  </a>
-</p>
+        <p>Tutti i contenuti presenti su Tongue sono protetti da copyright. È vietata la riproduzione, distribuzione o modifica senza autorizzazione.</p>
       </div>
-
     </div>
 
-  </footer>
+    <!-- JAVASCRIPT -->
 
-
-  <!-- =======================================================
-       MODALE COPYRIGHT
-  ======================================================== -->
-
-  <div
-    id="legal-modal"
-    class="legal-modal"
-  >
-
-    <div class="legal-content">
-
-      <button
-        class="legal-close"
-        id="close-legal"
-        type="button"
-        aria-label="Chiudi"
-      >
-        ✕
-      </button>
-
-
-      <img
-        src="/src/img/tonquelogo.png"
-        alt="Tongue Logo"
-        class="legal-logo"
-        width="80"
-        height="80"
-      >
-
-
-      <h3>
-        Diritti e Copyright.
-      </h3>
-
-
-      <p>
-        Tutti i contenuti presenti su Tongue sono protetti da copyright.
-        È vietata la riproduzione, distribuzione o modifica senza autorizzazione.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <!-- =======================================================
-       JAVASCRIPT
-  ======================================================== -->
-
-  <script
-    type="module"
-    src="/src/js/index.js"
-  ></script>
-
-</body>
-
+    <script type="module" src="/src/js/index.js"></script>
+  </body>
 </html>
