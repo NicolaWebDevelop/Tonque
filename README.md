@@ -1,5 +1,3 @@
-- [**README**](https://github.com/NicolaWebDevelop/Tonque#readme)
-
 # 📰 Tongue – Hacker News Web App
 
 Benvenuto su **Tongue**!
