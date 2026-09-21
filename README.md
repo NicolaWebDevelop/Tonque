@@ -1,795 +1,419 @@
-# Tongue
+📰 Tongue – Hacker News Web App
 
-Tongue è una web application Front-End sviluppata in **JavaScript ES6+** che recupera e visualizza le ultime notizie pubblicate su **Hacker News**.
+Benvenuto su Tongue!
 
-Il progetto utilizza **Vite** come build tool, **Axios** per le richieste alla Hacker News API e **Vitest** per i test automatici.
+Tongue è una web application sviluppata in JavaScript ES6+ che recupera e visualizza le ultime notizie pubblicate su Hacker News.
 
-L'applicazione integra inoltre una **Netlify Function** che utilizza la **Pexels API** per associare automaticamente immagini pertinenti alle notizie visualizzate.
+Il progetto utilizza Vite, Axios, SCSS e Vitest, con una struttura modulare basata su un semplice Service Pattern per separare accesso ai dati, logica applicativa e interfaccia.
 
-🔗 **Live Demo:**  
-https://tonque.netlify.app/
+🌐 Live Demo: https://tonque.netlify.app/
+💻 Repository GitHub: https://github.com/NicolaWebDevelop/Tonque
 
-🔗 **Repository GitHub:**  
-https://github.com/NicolaWebDevelop/Tonque
+✨ Funzionalità
 
----
+Recupero delle ultime news da Hacker News
 
-## Funzionalità
+Visualizzazione iniziale di 10 notizie
 
-- Recupero delle ultime news da Hacker News
-- Recupero di circa 500 ID tramite `newstories`
-- Visualizzazione iniziale di 10 news
-- Caricamento progressivo di 10 news alla volta
-- Pulsante **Carica altre news**
-- Scroll automatico al nuovo blocco caricato
-- Navigazione verticale tra i blocchi di news
-- Indicatore numerico del blocco attualmente visualizzato
-- Prime tre posizioni del menu sempre visibili
-- Data delle news formattata
-- Link diretto alla notizia originale
-- Immagini pertinenti alle news tramite Pexels
-- Netlify Function per proteggere la API key
-- Immagine fallback personalizzata Tongue
-- Sistema di segnalibri
-- Persistenza dei segnalibri tramite `localStorage`
-- Visualizzazione di 10 segnalibri alla volta
-- Pulsante **Mostra altri segnalibri**
-- Rimozione di singoli segnalibri
-- Eliminazione completa dei segnalibri tramite modale
-- Collegamento rapido alla sezione Segnalibri
-- Layout responsive
-- Build di produzione con Vite
-- Deploy tramite Netlify
-- Test automatici con Vitest
+Caricamento progressivo tramite pulsante Carica altre news
 
----
+Navigazione verticale tra i blocchi di notizie
 
-# Tecnologie utilizzate
+Scroll automatico verso il nuovo gruppo caricato
 
-- HTML5
-- SCSS
-- JavaScript ES6+
-- Vite
-- Axios
-- Vitest
-- Bootstrap Icons
-- Hacker News Firebase API
-- Pexels API
-- Netlify Functions
-- LocalStorage
-- Git
-- GitHub
-- Netlify
+Data delle news formattata
 
----
+Link diretto alla notizia originale
 
-# Architettura
+Immagini pertinenti recuperate tramite Pexels API
 
-Tongue utilizza un semplice **Service Pattern** per separare l'accesso ai dati dalla gestione dell'interfaccia.
+Ricerca immagine basata sul titolo della news
 
-La logica principale segue questa struttura:
+Immagine fallback quando non è disponibile un risultato valido
 
-```text
-API / Servizi esterni
-        ↓
-Service JavaScript
-        ↓
-notizie.js
-        ↓
-DOM / UI
-```
+Sistema di segnalibri
 
-Questo permette di mantenere separate:
+Persistenza dei segnalibri tramite localStorage
 
-- comunicazione con le API
-- gestione dei dati
-- gestione dei segnalibri
-- recupero delle immagini
-- rendering dell'interfaccia
-- navigazione tra i blocchi di news
+Visualizzazione progressiva dei segnalibri salvati
 
----
+Rimozione singola o completa dei segnalibri
 
-# Hacker News
+Layout completamente responsive
 
-Le news vengono recuperate utilizzando la Firebase API ufficiale di Hacker News.
+Build di produzione con Vite
 
-Flusso principale:
+Deploy tramite Netlify
 
-```text
+Netlify Function per proteggere la chiave API di Pexels
+
+Test automatici con Vitest
+
+🛠️ Tecnologie usate
+
+HTML5
+
+SCSS / Sass
+
+JavaScript ES6+
+
+Vite
+
+Axios
+
+Vitest
+
+Bootstrap Icons
+
+Hacker News Firebase API
+
+Pexels API
+
+Netlify Functions
+
+LocalStorage
+
+Prettier per la formattazione del codice
+
+📂 Struttura del progetto
+
+TonqueVITEPRO/
+├── index.html
+├── package.json
+├── package-lock.json
+├── netlify.toml
+├── .gitignore
+├── .prettierrc
+├── .prettierignore
+├── README.md
+│
+├── netlify/
+│   └── functions/
+│       └── article-image.mjs
+│
+└── src/
+    ├── img/
+    │
+    ├── js/
+    │   ├── index.js
+    │   ├── backtotop.js
+    │   ├── navigatore.js
+    │   ├── notizie.js
+    │   │
+    │   ├── services/
+    │   │   ├── articleImageService.js
+    │   │   ├── bookmarkService.js
+    │   │   └── hackerNewsService.js
+    │   │
+    │   └── utils/
+    │       └── formatDate.js
+    │
+    ├── scss/
+    │   ├── base/
+    │   ├── components/
+    │   ├── sections/
+    │   └── main.scss
+    │
+    └── test/
+        ├── bookmarkService.test.js
+        ├── formatDate.test.js
+        └── hackerNewsService.test.js
+
+🧱 Architettura
+
+Tongue utilizza un Service Pattern per separare le responsabilità e mantenere il codice più leggibile, riutilizzabile e testabile.
+
+📰 Hacker News
+
 Hacker News API
        ↓
 hackerNewsService.js
        ↓
 notizie.js
        ↓
-DOM
-```
+DOM / UI
 
-Il service:
+🖼️ Immagini Pexels
 
-```text
-src/js/services/hackerNewsService.js
-```
-
-espone principalmente:
-
-```js
-getLatestIds()
-getNewsById(id)
-```
-
-`getLatestIds()` recupera l'elenco degli ID delle news più recenti.
-
-`getNewsById(id)` recupera i dettagli della singola notizia.
-
-Gli endpoint utilizzati sono:
-
-```text
-/v0/newstories.json
-/v0/item/{id}.json
-```
-
-Le richieste vengono eseguite tramite **Axios**.
-
----
-
-# Caricamento progressivo delle news
-
-Tongue non carica tutte le news contemporaneamente.
-
-Il numero di news visualizzate per ogni gruppo è definito da:
-
-```js
-const PAGE_SIZE = 10;
-```
-
-All'avvio vengono mostrate le prime 10 notizie.
-
-Premendo:
-
-```text
-Carica altre news
-```
-
-vengono recuperate e renderizzate le successive 10.
-
-Il caricamento progressivo riduce il numero di elementi presenti contemporaneamente nel DOM e rende l'interfaccia più semplice da navigare.
-
----
-
-# Navigazione verticale
-
-Tongue integra un menu verticale che permette di spostarsi rapidamente tra i gruppi di news già caricati.
-
-Esempio:
-
-```text
-1
-2
-3
-4
-5
-🔖
-```
-
-Ogni numero rappresenta un blocco di 10 news.
-
-Il numero relativo al blocco attualmente visualizzato viene evidenziato automaticamente durante lo scroll.
-
-La logica è gestita da:
-
-```text
-src/js/navigatore.js
-```
-
-Il sistema utilizza:
-
-- `IntersectionObserver`
-- rilevamento dello scroll
-- `requestAnimationFrame`
-- `scrollIntoView()`
-
-per sincronizzare il menu con la posizione dell'utente nella pagina.
-
----
-
-# Immagini pertinenti alle news
-
-Le immagini delle card non sono immagini casuali.
-
-Tongue utilizza il titolo della notizia per effettuare automaticamente una ricerca tramite la **Pexels API**.
-
-Il flusso è:
-
-```text
-Hacker News
-     ↓
-titolo della news
-     ↓
+Titolo della news
+       ↓
 articleImageService.js
-     ↓
+       ↓
 Netlify Function
-     ↓
+       ↓
 Pexels API
-     ↓
-immagine pertinente
-     ↓
-Card
-```
+       ↓
+Immagine news / fallback
 
-Il service Front-End è:
+La chiave API Pexels rimane lato server tramite variabile d'ambiente e non viene esposta direttamente nel codice frontend.
 
-```text
-src/js/services/articleImageService.js
-```
+🔖 Segnalibri
 
-La Netlify Function è:
-
-```text
-netlify/functions/article-image.mjs
-```
-
-Il browser non comunica direttamente con Pexels.
-
-La richiesta passa attraverso la Netlify Function:
-
-```text
-Browser
-   ↓
-/.netlify/functions/article-image
-   ↓
-Pexels API
-```
-
-Questo permette di mantenere la **PEXELS_API_KEY fuori dal codice Front-End**.
-
----
-
-# Fallback immagini
-
-Se non viene trovata un'immagine valida, Tongue utilizza automaticamente un'immagine fallback generata per il progetto.
-
-Il fallback contiene:
-
-```text
-TONGUE
-NEWS
-```
-
-In questo modo una card non rimane mai senza contenuto grafico.
-
----
-
-# Sicurezza della Pexels API Key
-
-La chiave Pexels non viene salvata nel repository GitHub.
-
-In locale viene utilizzato un file:
-
-```text
-.env
-```
-
-contenente:
-
-```env
-PEXELS_API_KEY=YOUR_API_KEY
-```
-
-Il file `.env` è escluso tramite `.gitignore`.
-
-In produzione la stessa variabile viene configurata tramite le **Environment Variables di Netlify**:
-
-```text
-PEXELS_API_KEY
-```
-
-La Netlify Function può quindi leggerla tramite:
-
-```js
-process.env.PEXELS_API_KEY
-```
-
-senza esporla nel bundle JavaScript inviato al browser.
-
----
-
-# Pexels
-
-Tongue utilizza Pexels come sorgente delle immagini associate alle news.
-
-La ricerca viene costruita dinamicamente utilizzando il titolo della notizia.
-
-Esempio:
-
-```text
-NASA announces new lunar mission
-```
-
-può generare una ricerca relativa a:
-
-```text
-NASA lunar mission
-```
-
-La Function restituisce informazioni come:
-
-```js
-{
-  imageUrl,
-  source,
-  photographer,
-  photographerUrl,
-  photoUrl,
-  query
-}
-```
-
-Nel footer del progetto è presente il riferimento a **Pexels** come sorgente per alcune immagini utilizzate nell'applicazione.
-
----
-
-# Segnalibri
-
-Ogni news può essere salvata tramite il pulsante bookmark.
-
-I dati vengono memorizzati tramite:
-
-```js
 localStorage
-```
-
-Il flusso è:
-
-```text
-localStorage
-     ↓
+       ↓
 bookmarkService.js
-     ↓
+       ↓
 notizie.js
-     ↓
-DOM
-```
+       ↓
+DOM / UI
 
-Il service:
-
-```text
-src/js/services/bookmarkService.js
-```
-
-espone principalmente:
-
-```js
-isBookmarked(bookmarks, newsId)
-
-toggleBookmark(bookmarks, news)
-```
-
-Queste funzioni non manipolano direttamente il DOM e possono quindi essere testate separatamente.
-
----
-
-# Gestione dei segnalibri
-
-I segnalibri vengono mostrati in gruppi da:
-
-```js
-const BOOKMARK_PAGE_SIZE = 10;
-```
-
-Sono disponibili:
-
-- salvataggio di una news
-- rimozione di una singola news
-- visualizzazione progressiva dei bookmark
-- pulsante **Mostra altri segnalibri**
-- eliminazione completa
-- modale di conferma
-- persistenza dopo il refresh
-
----
-
-# Gestione principale delle news
+📰 Gestione delle news
 
 Il file:
 
-```text
 src/js/notizie.js
-```
 
-coordina le principali funzionalità dell'applicazione.
+si occupa principalmente di:
 
-Gestisce:
+rendering delle card
 
-- rendering delle card
-- caricamento progressivo
-- contatore delle news
-- recupero delle immagini
-- fallback immagini
-- creazione dei bookmark
-- aggiornamento delle icone
-- rendering dei segnalibri
-- eliminazione dei segnalibri
-- collegamento ai service
-- eventi dell'interfaccia
-- scroll tra i blocchi
-- comunicazione con il navigatore verticale
+paginazione delle news
 
----
+caricamento dei gruppi successivi
 
-# Struttura principale del progetto
+aggiornamento del contatore
 
-```text
-Tongue/
-│
-├── index.html
-├── package.json
-├── netlify.toml
-│
-├── netlify/
-│   └── functions/
-│       └── article-image.mjs
-│
-├── src/
-│   │
-│   ├── img/
-│   │
-│   ├── js/
-│   │   ├── index.js
-│   │   ├── notizie.js
-│   │   ├── navigatore.js
-│   │   ├── backtotop.js
-│   │   │
-│   │   ├── services/
-│   │   │   ├── articleImageService.js
-│   │   │   ├── bookmarkService.js
-│   │   │   └── hackerNewsService.js
-│   │   │
-│   │   └── utils/
-│   │       └── formatDate.js
-│   │
-│   ├── scss/
-│   │   ├── base/
-│   │   ├── components/
-│   │   └── sections/
-│   │
-│   └── test/
-│       ├── bookmarkService.test.js
-│       ├── formatDate.test.js
-│       └── hackerNewsService.test.js
-│
-└── README.md
-```
+collegamento delle immagini pertinenti
 
----
+gestione dei segnalibri
 
-# Installazione
+rendering della sezione segnalibri
 
-Clona il repository:
+eventi dei pulsanti
 
-```bash
-git clone https://github.com/NicolaWebDevelop/Tonque.git
-```
+scroll verso il nuovo gruppo di notizie
 
-Entra nella cartella:
+Le news vengono caricate in gruppi da:
 
-```bash
-cd Tonque
-```
+const PAGE_SIZE = 10;
 
-Installa le dipendenze:
-
-```bash
-npm install
-```
-
----
-
-# Configurazione Pexels
-
-Per utilizzare la ricerca automatica delle immagini è necessaria una API key Pexels.
-
-Crea nella root del progetto:
-
-```text
-.env
-```
-
-e inserisci:
-
-```env
-PEXELS_API_KEY=YOUR_API_KEY
-```
-
-Non pubblicare mai questo file nel repository.
-
----
-
-# Avvio in sviluppo
-
-Per lavorare solamente sul Front-End Vite:
-
-```bash
-npm run dev
-```
-
-Il server viene normalmente avviato su:
-
-```text
-http://localhost:5173
-```
-
----
-
-# Avvio con Netlify Functions
-
-Per utilizzare anche la ricerca immagini tramite Pexels è necessario avviare il progetto tramite **Netlify Dev**:
-
-```bash
-npx netlify dev
-```
-
-Il progetto sarà disponibile normalmente su:
-
-```text
-http://localhost:8888
-```
-
-In questa modalità vengono avviati insieme:
-
-```text
-Vite
-+
-Netlify Functions
-+
-Environment Variables
-```
-
----
-
-# Script disponibili
-
-## Development
-
-```bash
-npm run dev
-```
-
-## Build produzione
-
-```bash
-npm run build
-```
-
-## Preview build
-
-```bash
-npm run preview
-```
-
-## Vitest watch mode
-
-```bash
-npm run test
-```
-
-## Esecuzione completa test
-
-```bash
-npm run test:run
-```
-
----
-
-# Test
-
-I test automatici sono realizzati con **Vitest**.
-
-Attualmente sono presenti:
-
-```text
-bookmarkService.test.js       4 test
-formatDate.test.js            3 test
-hackerNewsService.test.js     4 test
-```
-
-Totale:
-
-```text
-Test Files  3 passed (3)
-Tests       11 passed (11)
-```
-
-I test verificano:
-
-- aggiunta dei bookmark
-- rimozione dei bookmark
-- verifica dello stato bookmark
-- comportamento delle funzioni pure
-- formattazione delle date
-- recupero degli ID delle news
-- recupero di una singola news
-- gestione degli errori API
-
-Per eseguire tutti i test:
-
-```bash
-npm run test:run
-```
-
----
-
-# Build
-
-Per creare la versione pronta alla produzione:
-
-```bash
-npm run build
-```
-
-Vite genera:
-
-```text
-dist/
-```
-
-contenente gli asset ottimizzati.
-
-La versione attuale completa correttamente la build di produzione.
-
----
-
-# Deploy
-
-Il progetto è pubblicato tramite **Netlify**.
+🧭 Navigazione verticale
 
 Il file:
 
-```text
-netlify.toml
-```
+src/js/navigatore.js
 
-contiene la configurazione relativa a:
+gestisce la navigazione verticale tra i diversi blocchi di news caricati.
 
-- comando di build
-- cartella `dist`
-- directory delle Functions
-- configurazione dell'ambiente locale Netlify Dev
+Il menu aggiorna automaticamente la pagina attiva durante lo scroll e include un collegamento rapido alla sezione dei segnalibri.
 
-La variabile:
+🖼️ Immagini delle news
 
-```text
-PEXELS_API_KEY
-```
+Il file:
 
-viene configurata separatamente su Netlify e non viene inclusa nel repository.
+src/js/services/articleImageService.js
 
-Il deploy viene aggiornato automaticamente quando viene pubblicata una nuova versione sul branch principale del repository.
+richiede al backend Netlify un'immagine pertinente per ogni notizia.
 
----
+La Function:
 
-# API utilizzate
+netlify/functions/article-image.mjs
 
-## Hacker News
+utilizza il titolo della news per effettuare una ricerca su Pexels.
 
-Utilizzata per recuperare:
+Se non viene trovata un'immagine valida, Tongue utilizza un'immagine fallback.
 
-- elenco delle news
-- titolo
-- URL
-- timestamp
-- ID
+🔖 Segnalibri
+
+I segnalibri vengono salvati nel browser utilizzando:
+
+localStorage;
+
+In questo modo rimangono disponibili anche dopo il refresh della pagina.
+
+Il file:
+
+src/js/services/bookmarkService.js
+
+contiene la logica per verificare, aggiungere e rimuovere i segnalibri senza modificare direttamente il DOM.
+
+🔌 API utilizzate
+
+Hacker News Firebase API
 
 Endpoint principali:
 
-```text
 /v0/newstories.json
-
 /v0/item/{id}.json
-```
 
-## Pexels
+Le richieste vengono gestite tramite Axios all'interno di:
 
-Utilizzata per recuperare immagini pertinenti alle notizie.
+src/js/services/hackerNewsService.js
 
-La richiesta viene effettuata esclusivamente attraverso:
+Pexels API
 
-```text
-netlify/functions/article-image.mjs
-```
+Pexels viene utilizzato per associare alle news immagini pertinenti.
 
-in modo da proteggere la API key.
+La richiesta viene eseguita tramite una Netlify Function, così la chiave API non viene inserita nel bundle frontend.
 
----
+🔐 Variabili d'ambiente
 
-# Service Pattern
+Per utilizzare Pexels in locale crea un file:
 
-Uno degli obiettivi principali del progetto è evitare di concentrare tutta la logica all'interno di `notizie.js`.
+.env
 
-I service hanno responsabilità specifiche:
+nella root del progetto e aggiungi:
 
-```text
-hackerNewsService.js
-→ Hacker News API
+PEXELS_API_KEY=la_tua_chiave_pexels
 
-bookmarkService.js
-→ logica dei segnalibri
+Il file .env non deve essere pubblicato su GitHub ed è escluso tramite .gitignore.
 
-articleImageService.js
-→ immagini delle news
-```
+Su Netlify la stessa variabile deve essere configurata nelle Environment Variables del progetto.
 
-La UI può quindi utilizzare questi moduli senza conoscere i dettagli delle implementazioni sottostanti.
+🚀 Installazione
 
----
+Clona il repository:
 
-# Obiettivi del progetto
+git clone https://github.com/NicolaWebDevelop/Tonque.git
 
-Tongue è stato sviluppato per consolidare competenze relative a:
+Entra nella cartella del progetto:
 
-- JavaScript ES6+
-- ES Modules
-- programmazione asincrona
-- `async / await`
-- chiamate API
-- Axios
-- Fetch API
-- manipolazione del DOM
-- Service Pattern
-- separazione delle responsabilità
-- gestione dello stato
-- LocalStorage
-- IntersectionObserver
-- gestione dello scroll
-- SCSS modulare
-- responsive design
-- environment variables
-- serverless functions
-- sicurezza delle API key
-- Git e GitHub
-- testing automatico
-- Vitest
-- Vite
-- deployment con Netlify
+cd Tonque
 
----
+Installa le dipendenze:
 
-# Stato del progetto
+npm install
 
-La versione attuale supera tutti i test automatici:
+Avvia Vite in sviluppo:
 
-```text
+npm run dev
+
+Per testare anche la Netlify Function in locale, avvia il progetto tramite Netlify Dev:
+
+netlify dev
+
+⚙️ Script disponibili
+
+Avvio in sviluppo
+
+npm run dev
+
+Build di produzione
+
+npm run build
+
+Anteprima della build
+
+npm run preview
+
+Vitest in modalità watch
+
+npm run test
+
+Esecuzione singola dei test
+
+npm run test:run
+
+🧪 Test automatici
+
+I test sono realizzati con Vitest.
+
+Attualmente il progetto contiene:
+
+bookmarkService.test.js → 4 test
+
+formatDate.test.js → 3 test
+
+hackerNewsService.test.js → 4 test
+
+Totale:
+
 Test Files  3 passed (3)
 Tests       11 passed (11)
-```
 
-e completa correttamente:
+I test verificano:
 
-```bash
+aggiunta e rimozione dei segnalibri
+
+controllo dello stato di un segnalibro
+
+formattazione delle date
+
+recupero degli ID delle news
+
+recupero di una singola news
+
+gestione degli errori nelle richieste HTTP
+
+Per eseguirli:
+
+npm run test:run
+
+📦 Build
+
+Per creare la versione pronta per la produzione:
+
 npm run build
-```
 
-La versione online integra:
+Vite genera automaticamente la cartella:
 
-```text
-Hacker News
-+
-Pexels
-+
-Netlify Functions
-+
-LocalStorage
-+
-Vitest
-+
-Vite
-```
+dist/
 
----
+che contiene i file ottimizzati per la pubblicazione.
 
-# Autore
+🌐 Deploy
 
-**Nicola Berardi**
+Il progetto è pubblicato tramite Netlify.
 
-Progetto Front-End sviluppato per consolidare competenze in JavaScript moderno, API REST, architettura del codice, testing e deployment.
+🔗 Apri Tongue online
+
+Il file:
+
+netlify.toml
+
+configura:
+
+comando di build
+
+cartella dist
+
+directory delle Netlify Functions
+
+ambiente locale tramite Netlify Dev
+
+🎯 Obiettivo del progetto
+
+Tongue è stato sviluppato per mettere in pratica:
+
+JavaScript moderno
+
+moduli ES
+
+programmazione asincrona
+
+chiamate API
+
+manipolazione del DOM
+
+separazione delle responsabilità
+
+Service Pattern
+
+gestione dello stato locale
+
+integrazione frontend/backend serverless
+
+variabili d'ambiente
+
+responsive design
+
+testing automatico
+
+workflow moderno con Vite
+
+deploy su Netlify
+
+✅ Stato del progetto
+
+La versione attuale completa correttamente la build di produzione e supera tutti i test automatici:
+
+✓ Build Vite completata
+✓ 3 Test Files passed
+✓ 11 Tests passed
+
+👨‍💻 Autore
+
+Nicola Berardi – Frontend Developer
+🌐 Portfolio
+💻 GitHub
+📧 Email
